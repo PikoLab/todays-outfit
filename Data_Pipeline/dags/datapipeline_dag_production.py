@@ -18,7 +18,7 @@ default_args = {
     'retry_delay': timedelta(minutes=5),
 }
 
-dag = DAG('todaysoutfit_dev', default_args=default_args, schedule_interval=timedelta(days=1))
+dag = DAG('todaysoutfit_production', default_args=default_args, schedule_interval=timedelta(days=1))
 
 # ec2-crawler-men
 wear_crawler_men = SSHHook(
