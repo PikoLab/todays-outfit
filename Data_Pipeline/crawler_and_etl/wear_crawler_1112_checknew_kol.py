@@ -31,5 +31,10 @@ if __name__ == "__main__":
     lst_exist_kol=extract_mongodb_distinct_kol(gender)
     lst_top100_kol=crawl_top100_kol(gender)
     lst_new_kol=check_new_kol(lst_exist_kol,lst_top100_kol)
-    insert_mongodb_new_kol(gender, lst_new_kol)
+    try:
+        insert_mongodb_new_kol(gender, lst_new_kol)
+    except:
+        pass
+
+    
 
