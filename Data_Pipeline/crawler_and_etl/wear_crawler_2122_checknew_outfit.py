@@ -199,20 +199,21 @@ if __name__ == "__main__":
         kol_latest_update_at= kol['latest_update_at']
         
         lst_new_outfit=check_new_outfit(kol_id, kol_latest_update_at)
-        for new_outfit in lst_new_outfit:
-            outfit_url=new_outfit['outfit_url']
-            outfit_date=new_outfit['outfit_date']
-            soup_outfit = crawl_beautifulsoup(outfit_url)
-            
-            data_outfit=parse_outfit_data(kol_id, outfit_url, outfit_date,soup_outfit, non_acc)
-            insert_mongodb_one_new_outfit(gender,outfit_url,data_outfit)
-            time.sleep(random.randint(1,5))
-            
-            lst_like=parse_rating_like(outfit_url)
-            lst_comment=parse_rating_comment_latest(kol_id,soup_outfit)                      
-            if soup_outfit.select_one('p#history_comment'):
-                time.sleep(5)
-                lst_comment+=parse_rating_comment_history(outfit_url)
-            insert_mongodb_one_new_rating(gender,outfit_url,lst_like, lst_comment,outfit_date)
-            time.sleep(1)
-        time.sleep(3)
+        if len(lst_new_outfit):
+            for new_outfit in lst_new_outfit:
+                outfit_url=new_outfit['outfit_url']
+                outfit_date=new_outfit['outfit_date']
+                soup_outfit = crawl_beautifulsoup(outfit_url)
+                
+                data_outfit=parse_outfit_data(kol_id, outfit_url, outfit_date,soup_outfit, non_acc)
+                insert_mongodb_one_new_outfit(gender,outfit_url,data_outfit)
+                time.sleep(random.randint(1,5))
+                
+                lst_like=parse_rating_like(outfit_url)
+                lst_comment=parse_rating_comment_latest(kol_id,soup_outfit)                      
+                if soup_outfit.select_one('p#history_comment'):
+                    time.sleep(5)
+                    lst_comment+=parse_rating_comment_history(outfit_url)
+                insert_mongodb_one_new_rating(gender,outfit_url,lst_like, lst_comment,outfit_date)
+                time.sleep(1)
+            time.sleep(3)
