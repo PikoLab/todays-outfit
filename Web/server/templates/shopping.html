@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div id="shopping-container"> 
+        <div class="shop_box">
+            <img class="shop_outfit_img_wish" src="{{outfit_image}}">
+            <p class="explore" >  穿搭編號# {{outfitid}}  </p>
+        </div>
+        <div>
+            <h1>購買商品清單&nbsp; 🛒</h1>
+            <div id="grid-wrapper-shopping">
+                {% for product in products %}
+                    <div class="box_shopping">    
+                            <a href="{{product.shop_url}}"><img class="shop_product_img" src="{{ product.product_image}}"></a>
+                            <a class="btn btn-secondary shopping-detail"  href="{{product.shop_url}}" style="width: 150px;"> Go Shopping</a>
+                     
+                                <p class="product_title_shopping">{{ product.brand }} / {{ product.category.upper() }}</p>
+                                {% if product.price != 'None' and  product.price !=0 %}
+                                    <p class="product_title_shopping">約台幣{{product.price}}</p>
+                                {% else %}
+                                    <p></p>
+                                {% endif %}      
+                    </div>
+                {% endfor %}  
+            </div>
+        </div>
+    </div>
+    {% if type=='wish' %}
+        <div id="next_page" >
+            <a class="btn btn-outline-secondary explore-more" href="{{url_for('wishlist')}}">Back To 最愛收藏清單</a>
+        </div>
+    {% else %}
+        <div id="next_page" >
+            <a class="btn btn-outline-secondary explore-more" href="{{keyword_link}}">Back To Search {{keyword_link.split('=')[-1]}}</a>
+        </div>
+    {% endif %}
+{% endblock content %}
