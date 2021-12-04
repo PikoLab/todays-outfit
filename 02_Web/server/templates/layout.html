@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+        <script
+          src="https://code.jquery.com/jquery-3.6.0.min.js"
+          integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
+          crossorigin="anonymous"></script>
+        <title>Today's Outfit</title>
+    </head>
+    <body>
+        <header>
+          <nav class="main-nav">
+            <a class="" href="{{ url_for('wordcloud')}}">
+              <img id="logo" src="{{ url_for('static', filename='pics/logo_todaysoutfit.jpg') }}">
+            </a>
+            <div id="category-link">
+              <li><a href="{{ url_for('wordcloud')}}">🔥HOT文字雲🔥</a></li>
+              <li><a href="{{ url_for('explore') }}">探索風格</a></li>
+              <li><a href="{{ url_for('search') }}">搜尋商品</a></li>
+              <li><a href="{{ url_for('wishlist') }}">最愛收藏</a></li>
+            </div>
+            <div id="nav-right">
+              <a href="{{ url_for('logout') }}">Logout</a>
+            </div>
+          </nav>
+        </header>
+  
+        <main>
+          {% block content %}{% endblock %}
+        </main>
+        
+        <footer>
+          <ul class="footer">
+            <li ><a class="footer-link" href="{{ url_for('datapipeline')}}">關於我們</a></li>
+            <li ><a class="footer-link" href="">服務條款</a></li>
+            <li ><a class="footer-link" href="">隱私政策</a></li>
+            <li ><a class="footer-link" href="">聯絡我們</a></li>
+            <li ><a class="footer-link" href="">FAQ</a></li>
+          </ul>
+          <div class="links">
+            <img src="{{ url_for('static', filename='pics/line.png') }}">
+            <img src="{{ url_for('static', filename='pics/twitter.png') }}" height="48">
+            <img src="{{ url_for('static', filename='pics/facebook.png') }}" height="48">
+          </div>
+           <div id="copyright">&copy;2021. All rights reserved</div>
+        </footer>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    </body>
+</html>
