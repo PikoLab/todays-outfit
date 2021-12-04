@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block content %}  
+    <script src="{{ url_for('static',filename='jqcloud.min.js') }}"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='jqcloud.min.css') }}">
+    <div id="wordcloud-container">
+        <h1 id="wordcloud-topic">點選流行關鍵字 尋找你的流行穿搭</h1>
+        <div id="wordcloud"></div>
+    </div>
+    <script>
+        var words={{ words_json | safe }}
+        console.log({{ words_json | safe }})
+        $('#wordcloud').jQCloud(words,{
+            delay: 50,
+            width: 1000,
+            height: 500,
+            autoResize: true,
+            steps : 50,
+            colors: [ '#F28482','#F28482','#F28482','#F28482','#F28482',
+                        "#E76F51","#E76F51","#E76F51","#E76F51","#E76F51",
+                    "#F4A261", "#F4A261", "#F4A261", "#F4A261", 
+                    '#AE2012','#AE2012','#AE2012','#AE2012','#AE2012',
+                    "#264653", "#264653","#264653","#264653","#264653",
+                    "#2A9D8F", "#2A9D8F", "#2A9D8F",  "#2A9D8F", "#2A9D8F",   
+                    "#E76F51","#E76F51","#E76F51","#E76F51","#E76F51",
+                    "#E9C46A", "#E9C46A","#E9C46A","#E9C46A","#E9C46A",
+                    "#E9D8A6", "#E9D8A6", "#E9D8A6", "#E9D8A6", "#E9D8A6", 
+            ],
+            fontSize: {
+                from: 0.2,
+                to: 0.05
+            }
+        });
+    </script>
+{% endblock content %}

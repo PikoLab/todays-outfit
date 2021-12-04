@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+{% block content %}  
+<div id="wordcloud-container">
+  <h1 id="wordcloud-topic">我的最愛收藏清單Total <span id="total-outfit">{{total_outfit}}</span> 組穿搭</h1>
+  <div class="col align-self-center">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+         
+              <div class="alert alert-{{category}}">
+                  {{message}}
+              </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith%}
+  </div>
+  <div id="container" class="container">
+    {% for outfit in outfits %}
+        <div class="box">
+          <img class="explore_img" src="{{outfit.outfit_image}}">
+          <p class="explore" >  # {{outfit.outfit_id}}  </p>
+          <a class="btn btn-secondary shopping"  href="{{ url_for('shopping',outfitid=outfit.outfit_id,type='wish')}}">Go Shopping</a>
+          <button id='btn-add' type='button' class="wish_item_add" style="color:#E76F51;" value={{outfit.outfit_id}} >❤</button>  
+        </div>
+    {% endfor %}
+  </div>
+</div>
+<div id="pagination">
+  {% if pages >= 1 and total_outfit > 6 %}
+      {% if total_outfit % 6 == 0 %}
+          {% for page_num in range (0,pages) %} 
+              {% if page_num==paging %}
+                  <a class="btn btn-secondary page" href="{{ url_for('wishlist', paging=page_num) }}">{{ page_num +1 }}</a>
+              {% else %}
+                  <a class="btn btn-outline-secondary page" href="{{ url_for('wishlist', paging=page_num) }}">{{ page_num +1 }}</a>
+              {% endif %}
+          {% endfor %}
+      {% else %}
+          {% for page_num in range (0,pages+1) %} 
+              {% if page_num==paging %}
+                  <a class="btn btn-secondary page" href="{{ url_for('wishlist', paging=page_num) }}">{{ page_num +1 }}</a>
+              {% else %}
+                  <a class="btn btn-outline-secondary page" href="{{ url_for('wishlist', paging=page_num) }}">{{ page_num +1 }}</a>
+              {% endif %}
+          {% endfor %}
+      {% endif %}
+  {% elif pages == 1 or total_outfit >0%}
+    <div id="next_page" >
+      <a class="btn btn-secondary explore-more" href="{{ url_for('wordcloud')}}">GO TO HOT文字雲</a>
+    </div>
+  {% else %}
+    <div id="wordcloud-container">
+        <h1 id="wordcloud-topic">快來蒐集更多穿搭靈感</h1>
+        <div id="next_page" >
+          <a class="btn btn-secondary explore-more" href="{{ url_for('wordcloud')}}">GO TO HOT文字雲</a>
+        </div> 
+    </div>
+  {% endif %}
+</div>
+<script src="{{ url_for('static',filename='wish.js') }}"></script>
+{% endblock content %}
