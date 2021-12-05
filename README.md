@@ -7,7 +7,7 @@ A Fashion Guide Website that aims to equip users with outfit trends and fashion 
 
 #### Website : https://todaysoutfit.online/
 ```txt
-⭐Test Account⭐
+👉Test Account
 E-mail: demowomen@gmail.com
 Password: demowomen
 ```
