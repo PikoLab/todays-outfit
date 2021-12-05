@@ -2,13 +2,16 @@
 
 A Fashion Guide Website that aims to equip users with outfit trends and fashion tips by providing “Trendy Fashion Word Cloud” and “Fashion Exploration Recommendation Engine.”
 
-![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/00_cover_page.png | width=100)
+![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/00_cover_page.png)
 
 ### Website : https://todaysoutfit.online/
 
 #### Test Account
-* E-mail: demowomen@gmail.com
-* Password: demowomen
+```txt
+E-mail: demowomen@gmail.com
+Password: demowomen
+```
+
 
 
 ## Table of Contents
@@ -23,35 +26,35 @@ A Fashion Guide Website that aims to equip users with outfit trends and fashion 
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/07_server_structure_and_data_pipeline.png | width=100)
 
 ## Airflow Dag
-![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/06_airflow_dag.png | width=100)
+![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/06_airflow_dag.png)
 
 
 ## Technologies
-1. Data Pipeline: Airflow
-2. Database: MongoDB, MySQL
-3. Backend: Flask
-4. Frontend: HTML, CSS, JavaScript
-5. Networking: Nginx, SSL Certificate
-6. Cloud Service(AWS): EC2, RDS, S3
-7. Recommendation Model: Collaborative Filtering Approach, KNN(cosine similarity)
-8. NLP: Word Cloud, Mecab(Japanese Word Segmentation)
-9. Designed API for Event Tracking (viewed, collected)
+1. Data Pipeline: `Airflow`
+2. Database: `MongoDB`, `MySQL`
+3. Cloud Service(AWS): `EC2`, `RDS`, `S3`
+4. Recommendation Model:`KNN`(`Collaborative Filtering Approach`, `cosine similarity` for distance metric)
+5. NLP: Word Cloud, `Mecab`(Japanese Word Segmentation)
+6. Designed API for Event Tracking (viewed, collected)
+7. Backend: `Flask`
+8. Frontend: `HTML`, `CSS`, `JavaScript`
+9. Networking: `Nginx`, `SSL Certificate`
 
+ 
 
 ## MySQL Schema
-![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/08_mysql_schema.png | width=100)
+![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/08_mysql_schema.png)
 
 ## Features
 ### Trendy Fashion Word Cloud
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/01_wordcloud.gif)
 ### Fashion Exploration Recommendation Engine
-![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/02_explore_recommendation.gif | width=100)
+![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/02_explore_recommendation.gif)
 ### Product Search
-![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/03_product_search.gif | width=100)
+![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/03_product_search.gif)
 ### Wishlist 
-![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/04_wishlist.gif | width=100)
+![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/04_wishlist.gif)
 
 ## Contact Me
-Data Engineer: Piko Chen(Chen Ku-Nung) 
-Email:nonie.115@gmail.com
+Piko Chen(Chen Ku-Nung) nonie.115@gmail.com
 
