@@ -6,8 +6,8 @@ A Fashion Guide Website that aims to equip users with outfit trends and fashion 
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/00_cover_page.png)
 
 #### Website : https://todaysoutfit.online/
-#### Test Account
 ```txt
+⭐Test Account⭐
 E-mail: demowomen@gmail.com
 Password: demowomen
 ```
