@@ -194,12 +194,12 @@ def check_new_outfit(kol_id,kol_latest_update_at):
 if __name__ == "__main__":
     lst_kol=extract_mongodb_kol(gender)
     non_acc=get_non_acc()
-    for kol in lst_kol:
+    for kol in lst_kol: 
         kol_id=kol['kol_id']
         kol_latest_update_at= kol['latest_update_at']
         
         lst_new_outfit=check_new_outfit(kol_id, kol_latest_update_at)
-        if len(lst_new_outfit):
+        try:
             for new_outfit in lst_new_outfit:
                 outfit_url=new_outfit['outfit_url']
                 outfit_date=new_outfit['outfit_date']
@@ -217,3 +217,5 @@ if __name__ == "__main__":
                 insert_mongodb_one_new_rating(gender,outfit_url,lst_like, lst_comment,outfit_date)
                 time.sleep(1)
             time.sleep(3)
+        except:
+            pass

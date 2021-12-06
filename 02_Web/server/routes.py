@@ -14,22 +14,22 @@ from utils import get_season
 access_token_expired_time=3600
 
 def check_valid_token():
-    token=None
-    if session.get('access_token'):
-        token=session.get('access_token')
+    token = session.get('access_token')
     if not token:
         return {'result':'fail', 'error_message':'No Token. Please Login Again!'}
-    try:
-        decode_token= jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        uid=decode_token['sub']
-        current_user=get_user_by_id(uid)
-        return {'result':'success', 'current_user':current_user}
-    except jwt.exceptions.InvalidSignatureError:
-        return {'result':'fail', 'error_message':'Signature verification failed. Please login again!'}
-    except jwt.exceptions.ExpiredSignatureError:
-        return {'result':'fail', 'error_message':'Signature has expired. Please Login Again!'}
-    except:
-        return {'result':'fail', 'error_message':'Token is Invalid. Please Login Again!'}
+    else:
+        try:
+            decode_token= jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+            uid=decode_token['sub']
+        except jwt.exceptions.InvalidSignatureError:
+            return {'result':'fail', 'error_message':'Signature verification failed. Please login again!'}
+        except jwt.exceptions.ExpiredSignatureError:
+            return {'result':'fail', 'error_message':'Signature has expired. Please Login Again!'}
+        except:
+            return {'result':'fail', 'error_message':'Token is Invalid. Please Login Again!'}
+        else:
+            current_user=get_user_by_id(uid)
+            return {'result':'success', 'current_user':current_user}
 
 def create_access_token(uid,access_expired):
     try:
@@ -119,6 +119,10 @@ class Login(Resource):
             else: 
                 flash(f'Fail to login! Please check your email address and password.', 'danger')
                 return make_response(render_template("login.html", form=form),200)
+        else:
+            flash(f'Fail to login! Please check your email address and password.', 'danger')
+            return make_response(render_template("login.html", form=form),200) 
+
 
 class Wordcloud(Resource):
     def get(self):
