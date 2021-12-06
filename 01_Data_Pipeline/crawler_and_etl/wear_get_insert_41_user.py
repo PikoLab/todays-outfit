@@ -9,7 +9,7 @@ def analysis_sentiment_positive_power(data):
     positive_vector = info["classes"][1]["confidence"]
     return positive_vector
 
-def check_new_user_event_comment(lst_exist_uid, collection_new_outfit_rating_by_kol):
+def check_new_user_event_comment(gender,lst_exist_uid, collection_new_outfit_rating_by_kol):
     lst_new_user=[]
     lst_new_event=[]
     lst_new_comment=[]
@@ -22,7 +22,6 @@ def check_new_user_event_comment(lst_exist_uid, collection_new_outfit_rating_by_
             lst_new_event.append(tuple_event)
             if like not in lst_exist_uid:
                 lst_exist_uid.append(like)
-                gender=gender
                 email='wear_{}@gmail.com'.format(like)
                 password='wear'
                 source='wear'
@@ -35,18 +34,21 @@ def check_new_user_event_comment(lst_exist_uid, collection_new_outfit_rating_by_
 
         for comment in rating['lst_comment']:
             try:
-                comment_time=datetime.datetime.strptime(comment['date'], '%Y/%m/%d')
+                comment_time=comment['date']
             except:
-                comment_time=datetime.datetime.strptime(comment['date'], '%Y%m%d')
-            tuple_event=(comment['uid'], outfit_id, 'comment',comment_time)
-            lst_new_event.append(tuple_event)
+                try:
+                    comment_time=datetime.datetime.strptime(comment['date'], '%Y/%m/%d')
+                except:
+                    comment_time=datetime.datetime.strptime(comment['date'], '%Y%m%d')
+            finally:
+                tuple_event=(comment['uid'], outfit_id, 'comment',comment_time)
+                lst_new_event.append(tuple_event)
             
             positive_score=analysis_sentiment_positive_power(comment['comment'])
             tuple_comment=(comment['uid'], outfit_id,comment['comment'],positive_score, comment_time)
             lst_new_comment.append(tuple_comment)
             if comment['uid'] not in lst_exist_uid:
                 lst_exist_uid.append(comment['uid'])
-                gender=gender
                 email='wear_{}@gmail.com'.format(comment['uid'])
                 password='wear'
                 source='wear'
@@ -68,7 +70,7 @@ if __name__ == "__main__":
             collection_new_outfit_rating_by_kol=extract_mongodb_new_outfit_rating_by_kol(gender,kol_id,latest_update_at)
 
             lst_exist_uid=extract_sql_exist_uid()
-            lst_new_user, lst_new_event, lst_new_comment=check_new_user_event_comment(lst_exist_uid, collection_new_outfit_rating_by_kol)
+            lst_new_user, lst_new_event, lst_new_comment=check_new_user_event_comment(gender,lst_exist_uid, collection_new_outfit_rating_by_kol)
 
             insert_sql_new_user(lst_new_user)
             insert_sql_new_event(lst_new_event)

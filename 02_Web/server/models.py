@@ -1,7 +1,8 @@
-from server import db
+from server import db_connection
 import datetime
 
 def get_user_by_id(uid):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT * FROM user WHERE uid = %s"
     cursor.execute(sql, uid)
@@ -9,7 +10,7 @@ def get_user_by_id(uid):
     return user
 
 def get_user_by_email(email):
-    db.ping()
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT * FROM user WHERE email = %s"
     cursor.execute(sql, email)
@@ -17,6 +18,7 @@ def get_user_by_email(email):
     return user
 
 def create_user(uid, gender,email, hashed_password ,source,picture,access_token, access_expired,login_at):
+    db = db_connection()
     try:
         cursor=db.cursor()  
         sql="INSERT INTO user (uid, gender,email, password,source,picture,access_token, access_expired,login_at) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)"
@@ -28,6 +30,7 @@ def create_user(uid, gender,email, hashed_password ,source,picture,access_token,
         return None
 
 def save_access_token(access_token,email):
+    db = db_connection()
     try:
         cursor=db.cursor()  
         sql="UPDATE user SET access_token=%s WHERE email=%s"
@@ -39,6 +42,7 @@ def save_access_token(access_token,email):
         return None
 
 def get_total_wish_outfit(time_period,uid):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT count(*) as total_outfit FROM outfit\
          WHERE posted_at > %s and outfit_id in (SELECT outfit_id FROM event WHERE uid=%s and event_type=4) " 
@@ -48,6 +52,7 @@ def get_total_wish_outfit(time_period,uid):
 
 
 def get_populer_recomm(season,gender,uid):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT outfit.outfit_id as outfit_id, outfit.outfit_image as outfit_image FROM outfit\
         JOIN kol ON outfit.kol_id=kol.kol_id\
@@ -60,6 +65,7 @@ def get_populer_recomm(season,gender,uid):
 
 
 def get_explore_recomm(uid,gender):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT recommendation_test.outfit2, outfit.outfit_id, outfit.outfit_image \
         FROM recommendation_test \
@@ -76,6 +82,7 @@ def get_explore_recomm(uid,gender):
 
 
 def tracking_behavior_viewed(lst_outfit,uid):
+    db = db_connection()
     #event_type: view=-1, like=1, comment=2, strong_positive_comment=3, collect/wish=4, shop=5
     viewed_at=datetime.datetime.now()
     lst_outfit_viewed=list()
@@ -90,6 +97,7 @@ def tracking_behavior_viewed(lst_outfit,uid):
     print("Tracking View Event for user #{} sucessfully!".format(uid))
 
 def get_trendy_wordcloud(gender):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT calculated_at, word_ch, word_jp, frequency FROM wordcloud\
         WHERE gender=%s \
@@ -100,6 +108,7 @@ def get_trendy_wordcloud(gender):
 
 
 def get_wish_outfit(uid):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT outfit_id FROM event \
                 WHERE uid=%s and event_type=4 "
@@ -108,6 +117,7 @@ def get_wish_outfit(uid):
     return lst_wish_outfits
 
 def get_wordcloud_search_outfit(keyword,season,gender):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT outfit.outfit_id as outfit_id,outfit.outfit_image as outfit_image FROM outfit \
                 JOIN kol on outfit.kol_id=kol.kol_id \
@@ -120,6 +130,7 @@ def get_wordcloud_search_outfit(keyword,season,gender):
     return lst_wordcloud_search_outfits
 
 def tracking_behavior_addwish(uid, outfit_id):
+    db = db_connection()
     addwish_at=datetime.datetime.now()
     cursor=db.cursor() 
     sql="INSERT INTO event (uid, outfit_id, event_type,time) \
@@ -130,6 +141,7 @@ def tracking_behavior_addwish(uid, outfit_id):
 
 
 def tracking_behavior_removewish(outfit_id,uid):
+    db = db_connection()
     cursor=db.cursor() 
     sql_removewish="UPDATE event \
                 SET event_type=0 \
@@ -140,6 +152,7 @@ def tracking_behavior_removewish(outfit_id,uid):
 
 
 def get_outfit_info(outfit_id):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT outfit_id,outfit_image \
         FROM outfit \
@@ -149,6 +162,7 @@ def get_outfit_info(outfit_id):
     return outfit
 
 def get_product_info(outfit_id):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT product.product_id as product_id, product.brand as brand, product.category as category, product.price as price,  \
                 product.shop_url as shop_url, product.product_image_feature_url as product_image  \
@@ -161,6 +175,7 @@ def get_product_info(outfit_id):
 
 
 def get_wish_outfit_by_page(uid,per_page, offset):
+    db = db_connection()
     cursor=db.cursor()  
     sql="SELECT outfit.outfit_id as outfit_id, outfit.outfit_image as outfit_image FROM outfit\
                 JOIN event ON outfit.outfit_id=event.outfit_id\
@@ -173,6 +188,7 @@ def get_wish_outfit_by_page(uid,per_page, offset):
 
 
 def get_colors():
+    db = db_connection()
     cursor=db.cursor() 
     sql="SELECT name FROM color where name not like '%金%' and  name not like '%銀%' "
     cursor.execute(sql)
@@ -180,6 +196,7 @@ def get_colors():
     return colors
 
 def get_categories(gender):
+    db = db_connection()
     cursor=db.cursor() 
     sql="SELECT name, name_ch FROM category"
     cursor.execute(sql)
@@ -192,6 +209,7 @@ def get_categories(gender):
     return categories
 
 def search_product_wear(season,gender, category,color):
+    db = db_connection()
     search_category="and product.category='{}'".format(category) if category else ''
     search_color="and product.color_id in (SELECT id FROM color WHERE name='{}')".format(color) if color else ''
 
@@ -218,6 +236,7 @@ def search_product_wear(season,gender, category,color):
 
 
 def search_product_hm(hm_kol_id, category,color,count_wear_outfits):
+    db = db_connection()
     search_category="and product.category='{}'".format(category) if category else ''
     search_color="and product.color_id in (SELECT id FROM color WHERE name='{}')".format(color) if color else ''
 
@@ -242,6 +261,7 @@ def search_product_hm(hm_kol_id, category,color,count_wear_outfits):
     return lst_hm_outfits
 
 def get_category_ch_name(category):
+    db = db_connection()
     cursor=db.cursor() 
     sql="SELECT name_ch FROM category WHERE name=%s"
     cursor.execute(sql,category)
