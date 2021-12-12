@@ -223,20 +223,47 @@ def insert_sql_new_user(lst_new_user):
     print("Dataset (#1:{})commited to SQL/user!".format(lst_new_user[:2]))
 
 def insert_sql_new_event(lst_new_event):
-    cursor=mysqldb.cursor() 
-    sql="INSERT INTO event(uid, outfit_id, event_type,time) \
-        VALUES (%s, %s, %s, %s)"
-    cursor.executemany(sql, lst_new_event)
-    mysqldb.commit()
-    print("Dataset (#1:{})commited to SQL/event!".format(lst_new_event[:2]))
+    try: 
+        cursor=mysqldb.cursor() 
+        sql="INSERT INTO event(uid, outfit_id, event_type,time) \
+            VALUES (%s, %s, %s, %s)"
+        cursor.executemany(sql, lst_new_event)
+        mysqldb.commit()
+        print("Dataset (#1:{})commited to SQL/event!".format(lst_new_event[:2]))
+    except:
+        for tuple_event in lst_new_event:
+            try:
+                cursor=mysqldb.cursor() 
+                sql="INSERT INTO events(uid, outfit_id, event_type,time) \
+                    VALUES (%s, %s, %s, %s)"
+                cursor.execute(sql, tuple_event)
+                mysqldb.commit()
+                print("Dataset ({})commited to SQL/event!".format(tuple_event))
+            except:
+                print("Error: new event data for ({}) did not commit to SQL!".format(tuple_event)) 
+
 
 def insert_sql_new_comment(lst_new_comment):
-    cursor=mysqldb.cursor() 
-    sql="INSERT INTO comment(uid, outfit_id, comment, positive_sentiment_socre, commented_at) \
-        VALUES (%s, %s, %s, %s, %s)"
-    cursor.executemany(sql, lst_new_comment)
-    mysqldb.commit()
-    print("Dataset (#1:{})commited to SQL/comment!".format(lst_new_comment[:2]))
+    try:
+        cursor=mysqldb.cursor() 
+        sql="INSERT INTO comment(uid, outfit_id, comment, positive_sentiment_socre, commented_at) \
+            VALUES (%s, %s, %s, %s, %s)"
+        cursor.executemany(sql, lst_new_comment)
+        mysqldb.commit()
+        print("Dataset (#1:{})commited to SQL/comment!".format(lst_new_comment[:2]))
+    except:
+        for tuple_comment in lst_new_comment:
+            try: 
+                cursor=mysqldb.cursor() 
+                sql="INSERT INTO comment(uid, outfit_id, comment, positive_sentiment_socre, commented_at) \
+                    VALUES (%s, %s, %s, %s, %s)"
+                cursor.execute(sql, tuple_comment)
+                mysqldb.commit()
+                print("Dataset (#1:{})commited to SQL/comment!".format(tuple_comment))
+            except:
+                print("Error: new comment data for ({}) did not commit to SQL!".format(tuple_comment)) 
+
+
 
 def insert_sql_new_rating_like(lst_new_rating_like):
     cursor=mysqldb.cursor()

@@ -58,9 +58,6 @@ def _check_login_auth(email,password):
 
 class Home(Resource):
     def get(self):
-        check_token=check_valid_token()
-        if check_token['result']=='fail':
-            return redirect(url_for('login'))
         return redirect(url_for('wordcloud'))
 
 class Register(Resource):
@@ -128,9 +125,11 @@ class Wordcloud(Resource):
     def get(self):
         check_token=check_valid_token()
         if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
+            gender='women'
+            words=get_trendy_wordcloud(gender)
+            words_json = [{'text': word['word_ch'], 'weight': word['frequency'],'link': OFFICIAL_URL+'/wordcloud/search?keyword='+word['word_jp']+'&keywordch='+word['word_ch']} for word in words]
+            return make_response(render_template('wordcloud.html',words_json=words_json),200)
+        
         gender=check_token['current_user']['gender']
         words=get_trendy_wordcloud(gender)
         words_json = [{'text': word['word_ch'], 'weight': word['frequency'],'link': OFFICIAL_URL+'/wordcloud/search?keyword='+word['word_jp']+'&keywordch='+word['word_ch']} for word in words]
@@ -140,9 +139,9 @@ class Explore(Resource):
     def get(self):
         check_token=check_valid_token()
         if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
+            season=get_season(date.today())
+            lst_outfits=get_populer_recomm(season,'women','demowomen')
+            return make_response(render_template('recommendation.html',outfits=lst_outfits),200)
         
         uid=check_token['current_user']['uid']
         gender=check_token['current_user']['gender']
@@ -164,9 +163,11 @@ class Search(Resource):
     def get(self):
         check_token=check_valid_token()
         if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
+            gender='women'
+            colors=get_colors()
+            categories=get_categories(gender)
+            return make_response(render_template('search_product.html',colors=colors, categories=categories, title="探索更多時尚穿搭 請先登入網站!"),200) 
+   
         gender=check_token['current_user']['gender']
         colors=get_colors()
         categories=get_categories(gender)
@@ -174,37 +175,31 @@ class Search(Resource):
           
     def post(self):
         check_token=check_valid_token()
-        if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
-        gender=check_token['current_user']['gender']
+        gender='women' if check_token['result']=='fail' else check_token['current_user']['gender']
         hm_kol_id= 'hm_official_women' if gender=='women' else 'hm_official_men'
         colors=get_colors()
         categories=get_categories(gender)
-        season=session.get('season')
+        season=session.get('season') if session.get('season')!=None else get_season(date.today())
         color = request.form.get('choose_color')
         category = request.form.get('choose_category')
-        
-        choosen_color= color if color!='Choose Color' else None
-        choosen_category=category if category!='Choose Product Category' else None
-        if choosen_color == None and choosen_category==None:
+    
+        choosen_color= color if color!='Choose Color' else ''
+        choosen_category=category if category!='Choose Product Category' else ''
+        if not choosen_color and not choosen_category:
             title='Oops!請選擇商品顏色和商品種類' 
             return make_response(render_template('search_product.html',colors=colors, categories=categories,title=title,type='result'),200)
 
         lst_wear_outfits=search_product_wear(season,gender,choosen_category, choosen_color)
         lst_hm_outfits=search_product_hm(hm_kol_id, choosen_category, choosen_color,len(lst_wear_outfits))
-        category_ch=get_category_ch_name(choosen_category)
-        title=f'"{color} {category_ch}" 的搜尋結果'
+        category_ch=get_category_ch_name(choosen_category) if choosen_category else '' 
+        title=f'"{choosen_color} {category_ch}" 的搜尋結果'
         return make_response(render_template('search_product.html',colors=colors, categories=categories, lst_wear_outfits=lst_wear_outfits, lst_hm_outfits=lst_hm_outfits, title=title,type='search'),200)
 
 class Wishlist(Resource):
     def get(self):
         check_token=check_valid_token()
         if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
+            return make_response(render_template('wishlist.html'), 200)
         
         uid=check_token['current_user']['uid']
         period_2year_ago=date.today() - relativedelta(years=+2)
@@ -228,30 +223,30 @@ class Logout(Resource):
 
 class Datapipeline(Resource):
     def get(self):
-        check_token=check_valid_token()
-        if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
         return make_response(render_template('datapipeline.html'),200)
 
 class WordcloudSearch(Resource):
     def get(self):
-        check_token=check_valid_token()
-        if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
-
-        uid=check_token['current_user']['uid']
-        gender=check_token['current_user']['gender']
         if request.args.get('keyword'): 
             keyword= request.args.get('keyword')
             keywordch=request.args.get('keywordch')
             season=session.get('season')
             create_session({'category_jp':keyword,'category_ch':keywordch})
-            lst_wordcloud_search_outfits=get_wordcloud_search_outfit(keyword,season,gender)
-            
+
+            check_token=check_valid_token()
+            if check_token['result']=='fail':
+                gender='women'
+                season=get_season(date.today())
+                lst_wordcloud_search_outfits=get_wordcloud_search_outfit(keyword,season,gender)
+                outfits=list()
+                for idx,outfit in enumerate(lst_wordcloud_search_outfits):
+                    outfit_info=dict(outfit, index=str(idx+1), style="color:#B6AD90;" )
+                    outfits.append(outfit_info)
+                return make_response(render_template('wordcloud_search.html',keywordch=keywordch, outfits=outfits),200)
+
+            uid=check_token['current_user']['uid']
+            gender=check_token['current_user']['gender']
+            lst_wordcloud_search_outfits=get_wordcloud_search_outfit(keyword,season,gender)            
             lst_wish_outfits=get_wish_outfit(uid)
             
             outfits=list()
@@ -267,13 +262,7 @@ class WordcloudSearch(Resource):
 
 
 class Shopping(Resource):
-    def get(self):
-        check_token=check_valid_token()
-        if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
-    
+    def get(self):    
         outfit_id=request.args.get('outfitid')
         shop_outfit=get_outfit_info(outfit_id)
         shop_products=get_product_info(outfit_id)
@@ -291,24 +280,18 @@ class Shopping(Resource):
 class AddWish(Resource):
     def post(self):
         check_token=check_valid_token()
-        if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
-        uid=check_token['current_user']['uid']
-        outfit_id = json.loads(list(request.form)[0])['outfit_id']
-        tracking_behavior_addwish(uid, outfit_id)
+        if check_token['result']=='success':
+            uid=check_token['current_user']['uid']
+            outfit_id = json.loads(list(request.form)[0])['outfit_id']
+            tracking_behavior_addwish(uid, outfit_id)
 
 class RemoveWish(Resource):
     def post(self):
         check_token=check_valid_token()
-        if check_token['result']=='fail':
-            error_message=check_token['error_message']
-            flash(error_message, 'danger')
-            return redirect(url_for('login'))
-        uid=check_token['current_user']['uid']
-        outfit_id = json.loads(list(request.form)[0])['outfit_id']
-        tracking_behavior_removewish(outfit_id,uid)
+        if check_token['result']=='success':
+            uid=check_token['current_user']['uid']
+            outfit_id = json.loads(list(request.form)[0])['outfit_id']
+            tracking_behavior_removewish(outfit_id,uid)
 
 @app.errorhandler(404)
 def page_not_found(e):

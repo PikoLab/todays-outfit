@@ -30,7 +30,7 @@ def check_new_product_by_kol(lst_exist_pid,collection_new_outfit_by_kol):
                 brand=item['brand']
                 product_title=item['subtitle']
                 color_id=get_wear_color(item['color'])
-                price=int(int(item['price'].replace('JP¥','').replace('$','').replace(',',''))/4//100*100) if (item['price']!='None') and (item['price']!='') and ('SGD' not in item['price']) else 0  
+                price=int(int(item['price'].replace('JP¥','').replace('$','').replace(',',''))/4//100*100) if 'JP¥' in item['price'] else 0 
                 shop_url=item['shop_url'] if item['shop_url'] !='None' else item['search_url']
                 product_image_feature_url='https:'+item['item_image_url']
                 if item[' lst_item_match']:

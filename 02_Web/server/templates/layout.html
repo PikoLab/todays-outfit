@@ -25,7 +25,12 @@
               <li><a href="{{ url_for('wishlist') }}">最愛收藏</a></li>
             </div>
             <div id="nav-right">
-              <a href="{{ url_for('logout') }}">Logout</a>
+              {% if session['access_token'] %}
+                <a href="{{ url_for('logout') }}">Logout</a>
+              {% else %}
+                <a href="{{ url_for('login') }}">Login</a>
+                <a href="{{ url_for('register') }}">Register</a>
+              {% endif %}
             </div>
           </nav>
         </header>
