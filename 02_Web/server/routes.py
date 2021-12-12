@@ -216,6 +216,20 @@ class Wishlist(Resource):
         else:
             return make_response(render_template('404.html'),404)
 
+    def post(self):
+        check_token=check_valid_token()
+        if check_token['result']=='success':
+            uid=check_token['current_user']['uid']
+            outfit_id = json.loads(list(request.form)[0])['outfit_id']
+            tracking_behavior_addwish(uid, outfit_id)
+
+    def delete(self):
+        check_token=check_valid_token()
+        if check_token['result']=='success':
+            uid=check_token['current_user']['uid']
+            outfit_id = json.loads(list(request.form)[0])['outfit_id']
+            tracking_behavior_removewish(outfit_id,uid)
+
 class Logout(Resource):
     def get(self):
         session.clear()
@@ -277,21 +291,21 @@ class Shopping(Resource):
             return make_response(render_template('shopping.html',keyword_link=keyword_link, products=shop_products, outfit_image=shop_outfit['outfit_image'],outfitid=outfit_id),200)
 
 
-class AddWish(Resource):
-    def post(self):
-        check_token=check_valid_token()
-        if check_token['result']=='success':
-            uid=check_token['current_user']['uid']
-            outfit_id = json.loads(list(request.form)[0])['outfit_id']
-            tracking_behavior_addwish(uid, outfit_id)
+# class AddWish(Resource):
+#     def post(self):
+#         check_token=check_valid_token()
+#         if check_token['result']=='success':
+#             uid=check_token['current_user']['uid']
+#             outfit_id = json.loads(list(request.form)[0])['outfit_id']
+#             tracking_behavior_addwish(uid, outfit_id)
 
-class RemoveWish(Resource):
-    def post(self):
-        check_token=check_valid_token()
-        if check_token['result']=='success':
-            uid=check_token['current_user']['uid']
-            outfit_id = json.loads(list(request.form)[0])['outfit_id']
-            tracking_behavior_removewish(outfit_id,uid)
+# class RemoveWish(Resource):
+#     def post(self):
+#         check_token=check_valid_token()
+#         if check_token['result']=='success':
+#             uid=check_token['current_user']['uid']
+#             outfit_id = json.loads(list(request.form)[0])['outfit_id']
+#             tracking_behavior_removewish(outfit_id,uid)
 
 @app.errorhandler(404)
 def page_not_found(e):
