@@ -7,6 +7,9 @@
         </div>
         <div>
             <h1>購買商品清單&nbsp; 🛒</h1>
+            {% if not session['access_token'] %}
+                <h4 id="wordcloud-topic">探索更多時尚穿搭 請先登入網站</h2>
+            {% endif%}
             <div id="grid-wrapper-shopping">
                 {% for product in products %}
                     <div class="box_shopping">    

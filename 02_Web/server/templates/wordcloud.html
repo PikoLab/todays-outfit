@@ -4,6 +4,9 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='jqcloud.min.css') }}">
     <div id="wordcloud-container">
         <h1 id="wordcloud-topic">點選流行關鍵字 尋找你的流行穿搭</h1>
+        {% if not session['access_token'] %}
+            <h4 id="wordcloud-topic">探索更多時尚穿搭 請先登入網站</h1>
+        {% endif %}
         <div id="wordcloud"></div>
     </div>
     <script>
