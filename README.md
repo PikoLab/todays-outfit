@@ -67,7 +67,7 @@ Generated Word Cloud of trendy fashion keywords by word segmentation and word fr
 User can search outfits by color or product category. Only show the most popular outfit results. 
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/03_product_search.gif)
 ### 4. Wishlist 
-List the outfits and sort by time in descending order.
+List the outfits on user's wishlist and sort by time in descending order.
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/04_wishlist.gif)
 
 ## Contact Me
