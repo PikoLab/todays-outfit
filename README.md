@@ -33,7 +33,7 @@ Password: demowomen
 2. Database: `MongoDB`, `MySQL`
 3. Cloud Service(AWS): `EC2`, `RDS`, `S3`
 4. Recommendation Model:`KNN`( `Collaborative Filtering Approach`, `cosine similarity` for distance metric)
-5. NLP: Word Cloud, `Mecab`(Japanese Word Segmentation)
+5. NLP: Word Cloud, `Mecab`(Japanese Word Segmentation), `asari`(Japanese Sentiment Analysis)
 6. Designed API for Event Tracking (viewed, collected)
 7. Backend: `Flask`
 8. Frontend: `HTML`, `CSS`, `JavaScript`
@@ -49,7 +49,17 @@ Password: demowomen
 Generated Word Cloud of trendy fashion keywords by word segmentation and word frequency calculation
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/01_wordcloud.gif)
 ### 2. Fashion Exploration Recommendation Engine
-Constructed Fashion Exploration Recommendation Engine in collaborative filtering approach to make personalized recommendations according to tracked user preference(events) such as liking, commenting, and collecting on outfit posts.
+Constructed Fashion Exploration Recommendation Engine in collaborative filtering approach to make personalized recommendations according to tracked user preference(events) on outfit posts. Here is the evaluatoin table of event and user rating:  
+
+| Event  | User Rating | Description |
+| --- | --- | --- |
+| view   | 0     |     |
+| like   | 1     |     |
+| comment(Positive Score > 70%)   | 2     | evaluated by "asari" Sentiment Analysis |
+| comment(Positive Score > 90%)   | 3     | evaluated by "asari" Sentiment Analysis |
+| collect| 4     | user add the outfit to wishlist |
+| shop   | 5     | user click "go shopping"  |
+
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/02_explore_recommendation.gif)
 ### 3. Product Search
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/03_product_search.gif)
