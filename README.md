@@ -33,7 +33,7 @@ Password: demowomen
 2. Database: `MongoDB`, `MySQL`
 3. Cloud Service(AWS): `EC2`, `RDS`, `S3`
 4. Recommendation Model:`KNN`( `Collaborative Filtering Approach`, `cosine similarity` for distance metric)
-5. NLP: Word Cloud, `Mecab`(Japanese Word Segmentation)
+5. NLP: Word Cloud, `Mecab`(Japanese Word Segmentation), `asari`(Japanese Sentiment Analysis)
 6. Designed API for Event Tracking (viewed, collected)
 7. Backend: `Flask`
 8. Frontend: `HTML`, `CSS`, `JavaScript`
@@ -49,11 +49,25 @@ Password: demowomen
 Generated Word Cloud of trendy fashion keywords by word segmentation and word frequency calculation
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/01_wordcloud.gif)
 ### 2. Fashion Exploration Recommendation Engine
-Constructed Fashion Exploration Recommendation Engine in collaborative filtering approach to make personalized recommendations according to tracked user preference(events) such as liking, commenting, and collecting on outfit posts.
+* Constructed Fashion Exploration Recommendation Engine in `collaborative filtering` approach to make personalized recommendations according to `tracked user preference(events) on outfit posts`. 
+* The way of `Explore`: Recommend user the outfits which are similar with the outfits on user's wishlist. And filter out the outfits which user have viewed. 
+* Here is the evaluatoin table of event and user rating:  
+
+| Event  | User Rating | Description |
+| --- |  :---:  | --- |
+| view     | 0     |     |
+| like     | 1     |     |
+| commentA | 2     | More than `70% Positive Score` evaluated by "asari" Sentiment Analysis |
+| commentB | 3     | More than `90% Positive Score` evaluated by "asari" Sentiment Analysis |
+| collect  | 4     | user add the outfit to `wishlist` |
+| shop     | 5     | user click `go shopping`  |
+
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/02_explore_recommendation.gif)
 ### 3. Product Search
+User can search outfits by color or product category. Only show the most popular outfit results. 
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/03_product_search.gif)
 ### 4. Wishlist 
+List the outfits on user's wishlist and sort by time in descending order.
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/04_wishlist.gif)
 
 ## Contact Me
