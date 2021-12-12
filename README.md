@@ -52,7 +52,7 @@ Generated Word Cloud of trendy fashion keywords by word segmentation and word fr
 Constructed Fashion Exploration Recommendation Engine in collaborative filtering approach to make personalized recommendations according to tracked user preference(events) on outfit posts. Here is the evaluatoin table of event and user rating:  
 
 | Event  | User Rating | Description |
-| --- | --- | --- |
+| --- |  :---:  | --- |
 | view     | 0     |     |
 | like     | 1     |     |
 | commentA | 2     | More than `70% Positive Score` evaluated by "asari" Sentiment Analysis |
