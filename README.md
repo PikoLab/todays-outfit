@@ -49,8 +49,9 @@ Password: demowomen
 Generated Word Cloud of trendy fashion keywords by word segmentation and word frequency calculation
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/01_wordcloud.gif)
 ### 2. Fashion Exploration Recommendation Engine
-Constructed Fashion Exploration Recommendation Engine in **collaborative filtering** approach to make personalized recommendations according to tracked user preference(events) on outfit posts. 
-Recommend user the outfits which are similar with the outfits on user's wishlist. And filter out the outfits which user have viewed. Here is the evaluatoin table of event and user rating:  
+* Constructed Fashion Exploration Recommendation Engine in `**collaborative filtering**` approach to make personalized recommendations according to `tracked user preference(events) on outfit posts`. 
+* Recommend user the outfits which are similar with the outfits on user's wishlist. And filter out the outfits which user have viewed. 
+* Here is the evaluatoin table of event and user rating:  
 
 | Event  | User Rating | Description |
 | --- |  :---:  | --- |
