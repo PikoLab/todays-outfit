@@ -5,8 +5,8 @@ container.addEventListener('click', (event) => {
     event.target.class = "wish_item_non"
     event.target.style = "color:#B6AD90;"
     let outfitId = event.target.value
-    fetch('/removewish', {
-      method: 'post',
+    fetch('/wishlist', {
+      method: 'delete',
       headers: {
         'content-type': 'application/x-www-form-urlencoded'
       },
@@ -20,7 +20,7 @@ container.addEventListener('click', (event) => {
     event.target.style = "color:#E76F51;"
     let outfitId = event.target.value 
     console.log(outfitId)
-    fetch('/addwish', {
+    fetch('/wishlist', {
       method: 'post',
       headers: {
         'content-type': 'application/x-www-form-urlencoded'
