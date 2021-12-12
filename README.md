@@ -53,12 +53,12 @@ Constructed Fashion Exploration Recommendation Engine in collaborative filtering
 
 | Event  | User Rating | Description |
 | --- | --- | --- |
-| view   | 0     |     |
-| like   | 1     |     |
-| comment(Positive Score > 70%)   | 2     | evaluated by "asari" Sentiment Analysis |
-| comment(Positive Score > 90%)   | 3     | evaluated by "asari" Sentiment Analysis |
-| collect| 4     | user add the outfit to wishlist |
-| shop   | 5     | user click "go shopping"  |
+| view     | 0     |     |
+| like     | 1     |     |
+| commentA | 2     | More than `70% Positive Score` evaluated by "asari" Sentiment Analysis |
+| commentB | 3     | More than `90% Positive Score` evaluated by "asari" Sentiment Analysis |
+| collect  | 4     | user add the outfit to `wishlist` |
+| shop     | 5     | user click `go shopping`  |
 
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/02_explore_recommendation.gif)
 ### 3. Product Search
