@@ -290,23 +290,6 @@ class Shopping(Resource):
             keyword_link= OFFICIAL_URL +'/wordcloud/search?keyword='+keyword+'&keywordch='+keywordch
             return make_response(render_template('shopping.html',keyword_link=keyword_link, products=shop_products, outfit_image=shop_outfit['outfit_image'],outfitid=outfit_id),200)
 
-
-# class AddWish(Resource):
-#     def post(self):
-#         check_token=check_valid_token()
-#         if check_token['result']=='success':
-#             uid=check_token['current_user']['uid']
-#             outfit_id = json.loads(list(request.form)[0])['outfit_id']
-#             tracking_behavior_addwish(uid, outfit_id)
-
-# class RemoveWish(Resource):
-#     def post(self):
-#         check_token=check_valid_token()
-#         if check_token['result']=='success':
-#             uid=check_token['current_user']['uid']
-#             outfit_id = json.loads(list(request.form)[0])['outfit_id']
-#             tracking_behavior_removewish(outfit_id,uid)
-
 @app.errorhandler(404)
 def page_not_found(e):
     return make_response(render_template('404.html'), 404)
