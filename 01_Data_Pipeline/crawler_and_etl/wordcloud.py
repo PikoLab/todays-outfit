@@ -40,7 +40,7 @@ def wordcloud_analysis(source_text, stop_words):
     while node:
         word_type = node.feature.split(',')[0]
         word=node.surface
-        if (word_type == '形容詞' or word_type == '名詞') and (word not in stop_words):
+        if (word_type == '形容詞' or word_type == '名詞') and (word not in stop_words['stop_words']):
             word_list.append(node.surface)
         node = node.next
     word_counter = Counter(word_list).most_common(30)
@@ -89,5 +89,3 @@ if __name__ == "__main__":
         word_counter=wordcloud_analysis(source_text,stop_words)
         lst_words=translate_word_counter(word_counter, word_translation)
         insert_sql_wordcloud(lst_words)
-
-   
