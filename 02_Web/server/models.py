@@ -67,16 +67,20 @@ def get_populer_recomm(season,gender,uid):
 def get_explore_recomm(uid,gender):
     db = db_connection()
     cursor=db.cursor()  
+    sql_latest_calculate="SELECT max(calculated_at) as latest FROM recommendation_test"
+    cursor.execute(sql_latest_calculate)
+    latest=cursor.fetchone()['latest']  
+
     sql="SELECT recommendation_test.outfit2, outfit.outfit_id, outfit.outfit_image \
         FROM recommendation_test \
         JOIN outfit ON recommendation_test.outfit2=outfit.outfit_id\
         JOIN kol ON outfit.kol_id=kol.kol_id\
         WHERE recommendation_test.outfit1 in (SELECT outfit_id FROM (SELECT outfit_id FROM event WHERE uid=%s and event_type=%s ORDER BY time DESC LIMIT 6) T)\
                 and recommendation_test.outfit2 not in (SELECT outfit_id FROM event WHERE uid=%s)    \
-                and kol.gender=%s    \
+                and kol.gender=%s and calculated_at= %s\
         GROUP BY recommendation_test.outfit2\
         ORDER BY recommendation_test.similar_score LIMIT 6" 
-    cursor.execute(sql,(uid,4,uid,gender))
+    cursor.execute(sql,(uid,4,uid,gender,latest))
     lst_explore_recomm=cursor.fetchall()  
     return lst_explore_recomm
 

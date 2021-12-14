@@ -106,6 +106,17 @@ def extract_seasonal_outfit(season_now, year_now, gender):
     tuple_seasonal_outfit=tuple([outfit['outfit_id'] for outfit in cursor.fetchall()])
     return tuple_seasonal_outfit
 
+def extract_month_outfit(gender,period_month_ago):
+    sql="SELECT outfit.outfit_id as outfit_id FROM outfit \
+                JOIN kol ON outfit.kol_id=kol.kol_id \
+                WHERE DATE(outfit.posted_at) > %s \
+                and kol.gender=%s\
+                and outfit.total_likes > 150"
+    cursor=mysqldb.cursor() 
+    cursor.execute(sql,(period_month_ago, gender))
+    tuple_seasonal_outfit=tuple([outfit['outfit_id'] for outfit in cursor.fetchall()])
+    return tuple_seasonal_outfit
+
 def extract_batch_seasonal_rating_data(tuple_seasonal_outfit, start_point, end_point):
     sql="SELECT uid,outfit_id,rating FROM rating \
           WHERE outfit_id in %s \
@@ -293,9 +304,25 @@ def insert_sql_wordcloud(lst_words):
     print("Dataset (#1:{}/{})commited to SQL/wordcloud!".format(lst_words[0][0],lst_words[0]))
 
 def insert_sql_knn_recommendation(lst_seasonal_recomm):
-    sql="INSERT INTO recommendation(outfit1,outfit2, similar_score, calculated_at)\
+    sql="INSERT INTO recommendation_test(outfit1,outfit2, similar_score, calculated_at)\
         VALUES (%s,%s,%s, %s) "
     cursor=mysqldb.cursor() 
     cursor.executemany(sql, lst_seasonal_recomm)
     mysqldb.commit()
     print("Recommendation Dataset (data1#{})commited to SQL/recomm!".format(lst_seasonal_recomm[0]))
+
+def insert_sql_etl_time_consumption(calculated_at, job_name, gender, time_consumption):
+    sql="INSERT INTO etl_time_consumption(calculated_at, etl_job, gender, time_consumption)\
+        VALUES (%s,%s,%s, %s) "
+    cursor=mysqldb.cursor() 
+    cursor.execute(sql, (calculated_at, job_name, gender, time_consumption))
+    mysqldb.commit()
+    print(calculated_at, job_name, gender, time_consumption)
+
+def insert_sql_etl_quantity(calculated_at, item, gender, new_quantity):
+    sql="INSERT INTO etl_quantity(calculated_at, item, gender, new_quantity)\
+        VALUES (%s,%s,%s, %s) "
+    cursor=mysqldb.cursor() 
+    cursor.execute(sql, (calculated_at, item, gender, new_quantity))
+    mysqldb.commit()
+    print(calculated_at, item, gender, new_quantity)
