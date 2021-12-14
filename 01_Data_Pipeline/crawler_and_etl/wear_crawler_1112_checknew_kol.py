@@ -1,10 +1,12 @@
 from config import *
 from model_mongodb import *
+from model_sql import *
 from bs4 import BeautifulSoup 
 import requests
 import datetime
 from dateutil.relativedelta import relativedelta
 import sys
+import time 
 
 gender=sys.argv[1]
 
@@ -28,13 +30,18 @@ def check_new_kol(lst_exist_kol,lst_top100_kol):
     return lst_new_kol
 
 if __name__ == "__main__":  
+    t1=time.time()
+    calculated_at=datetime.datetime.now()
     lst_exist_kol=extract_mongodb_distinct_kol(gender)
     lst_top100_kol=crawl_top100_kol(gender)
     lst_new_kol=check_new_kol(lst_exist_kol,lst_top100_kol)
     try:
         insert_mongodb_new_kol(gender, lst_new_kol)
+        insert_sql_etl_quantity(calculated_at, 'new_kol', gender, len(lst_new_kol))
     except:
         pass
 
-    
+    t2=time.time()
+    time_consumption=t2-t1  
+    insert_sql_etl_time_consumption(calculated_at, 'crawl_kol', gender, time_consumption)
 
