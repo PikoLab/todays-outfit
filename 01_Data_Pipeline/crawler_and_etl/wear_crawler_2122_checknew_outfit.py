@@ -1,9 +1,9 @@
 #coding=utf-8
 from config import *
 from model_mongodb import *
+from model_sql import *
 from bs4 import BeautifulSoup
 import requests
-import datetime
 from datetime import datetime, timedelta
 import time
 import json
@@ -192,6 +192,13 @@ def check_new_outfit(kol_id,kol_latest_update_at):
 
 
 if __name__ == "__main__":
+    t1=time.time()
+    calculated_at=datetime.datetime.now()
+
+    quantity_outfit=0
+    quantity_like=0
+    quantity_comment=0
+
     lst_kol=extract_mongodb_kol(gender)
     non_acc=get_non_acc()
     for kol in lst_kol: 
@@ -199,6 +206,7 @@ if __name__ == "__main__":
         kol_latest_update_at= kol['latest_update_at']
         
         lst_new_outfit=check_new_outfit(kol_id, kol_latest_update_at)
+        quantity_outfit += len(lst_new_outfit)
         try:
             for new_outfit in lst_new_outfit:
                 outfit_url=new_outfit['outfit_url']
@@ -215,7 +223,16 @@ if __name__ == "__main__":
                     time.sleep(5)
                     lst_comment+=parse_rating_comment_history(outfit_url)
                 insert_mongodb_one_new_rating(gender,outfit_url,lst_like, lst_comment,outfit_date)
+                quantity_like += len(lst_like)
+                quantity_comment += len(lst_comment)
                 time.sleep(1)
             time.sleep(3)
         except:
             pass
+    
+    t2=time.time()
+    time_consumption=t2-t1  
+    insert_sql_etl_time_consumption(calculated_at, 'crawl_outfit', gender, time_consumption)
+    insert_sql_etl_quantity(calculated_at, 'new_outfit', gender, quantity_outfit)
+    insert_sql_etl_quantity(calculated_at, 'new_like', gender, quantity_like)
+    insert_sql_etl_quantity(calculated_at, 'new_comment', gender, quantity_comment)
