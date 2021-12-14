@@ -10,6 +10,7 @@ from dateutil.relativedelta import relativedelta
 from flask_restful import Resource
 import json
 from utils import get_season
+import time
 
 access_token_expired_time=3600
 
@@ -137,6 +138,7 @@ class Wordcloud(Resource):
 
 class Explore(Resource):
     def get(self):
+        t1=time.time()
         check_token=check_valid_token()
         if check_token['result']=='fail':
             season=get_season(date.today())
@@ -157,6 +159,8 @@ class Explore(Resource):
             lst_outfits=lst_explore_recomm if len(lst_explore_recomm)!=0 else get_populer_recomm(season,gender,uid)
 
         tracking_behavior_viewed(lst_outfits,uid)
+        t2=time.time()
+        print("Explore Time Consumption:{}".format(t2-t1))
         return make_response(render_template('recommendation.html',outfits=lst_outfits),200)
 
 class Search(Resource):
