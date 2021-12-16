@@ -206,7 +206,7 @@ if __name__ == "__main__":
         kol_latest_update_at= kol['latest_update_at']
         
         lst_new_outfit=check_new_outfit(kol_id, kol_latest_update_at)
-        quantity_outfit += len(lst_new_outfit)
+        quantity_outfit += len(lst_new_outfit) if lst_new_outfit else 0 
         try:
             for new_outfit in lst_new_outfit:
                 outfit_url=new_outfit['outfit_url']
@@ -223,8 +223,8 @@ if __name__ == "__main__":
                     time.sleep(5)
                     lst_comment+=parse_rating_comment_history(outfit_url)
                 insert_mongodb_one_new_rating(gender,outfit_url,lst_like, lst_comment,outfit_date)
-                quantity_like += len(lst_like)
-                quantity_comment += len(lst_comment)
+                quantity_like += len(lst_like) if lst_like else 0 
+                quantity_comment += len(lst_comment) if lst_comment else 0 
                 time.sleep(1)
             time.sleep(3)
         except:
