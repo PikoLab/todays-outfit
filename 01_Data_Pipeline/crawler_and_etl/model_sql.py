@@ -111,14 +111,14 @@ def extract_month_outfit(gender,period_month_ago):
                 JOIN kol ON outfit.kol_id=kol.kol_id \
                 WHERE DATE(outfit.posted_at) > %s \
                 and kol.gender=%s\
-                and outfit.total_likes > 150"
+                and outfit.total_likes > 200"
     cursor=mysqldb.cursor() 
     cursor.execute(sql,(period_month_ago, gender))
     tuple_seasonal_outfit=tuple([outfit['outfit_id'] for outfit in cursor.fetchall()])
     return tuple_seasonal_outfit
 
 def extract_batch_seasonal_rating_data(tuple_seasonal_outfit, start_point, end_point):
-    sql="SELECT uid,outfit_id,rating FROM rating \
+    sql="SELECT uid,outfit_id,FLOOR(rating) as rating FROM rating \
           WHERE outfit_id in %s \
                 and id between %s and %s \
           Group BY 1,2 \

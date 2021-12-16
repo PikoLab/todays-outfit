@@ -12,6 +12,11 @@ import json
 from utils import get_season
 import time
 
+#plotly
+import pandas as pd 
+import plotly
+import plotly.express as px
+
 access_token_expired_time=3600
 
 def check_valid_token():
@@ -56,6 +61,14 @@ def _check_login_auth(email,password):
     hashed_password=user['password'] if user else None
     valid=bcrypt.check_password_hash(hashed_password, password) if hashed_password != None else False
     return {'uid':uid, 'gender':gender, 'valid':valid}
+
+def create_graph(data_source, y_axis, title):
+    gender=['women','men']
+    y_axis=[data_source['women'],data_source['men']]
+    data=dict(gender=gender, y_axis=y_axis)
+    figure_name= px.bar(data, x='gender', y=y_axis, title=title)
+    graphJSON = json.dumps(figure_name, cls=plotly.utils.PlotlyJSONEncoder)
+    return graphJSON 
 
 class Home(Resource):
     def get(self):
@@ -155,7 +168,7 @@ class Explore(Resource):
         if total_wish_outfit == 0:
             lst_outfits=get_populer_recomm(season,gender,uid)
         else:
-            lst_explore_recomm=get_explore_recomm(uid,gender)
+            lst_explore_recomm=get_explore_recomm(uid,gender,season)
             lst_outfits=lst_explore_recomm if len(lst_explore_recomm)!=0 else get_populer_recomm(season,gender,uid)
 
         tracking_behavior_viewed(lst_outfits,uid)
@@ -239,10 +252,6 @@ class Logout(Resource):
         session.clear()
         return redirect(url_for('home'))
 
-class Datapipeline(Resource):
-    def get(self):
-        return make_response(render_template('datapipeline.html'),200)
-
 class WordcloudSearch(Resource):
     def get(self):
         if request.args.get('keyword'): 
@@ -264,7 +273,7 @@ class WordcloudSearch(Resource):
 
             uid=check_token['current_user']['uid']
             gender=check_token['current_user']['gender']
-            lst_wordcloud_search_outfits=get_wordcloud_search_outfit(keyword,season,gender)            
+            lst_wordcloud_search_outfits=get_wordcloud_search_outfit(keyword,season,gender)         
             lst_wish_outfits=get_wish_outfit(uid)
             
             outfits=list()
@@ -293,6 +302,40 @@ class Shopping(Resource):
             keywordch=session.get('category_ch')
             keyword_link= OFFICIAL_URL +'/wordcloud/search?keyword='+keyword+'&keywordch='+keywordch
             return make_response(render_template('shopping.html',keyword_link=keyword_link, products=shop_products, outfit_image=shop_outfit['outfit_image'],outfitid=outfit_id),200)
+
+class Datapipeline(Resource):
+    def get(self):
+        return make_response(render_template('datapipeline.html'),200)
+
+class RecommendationDashboard(Resource):
+    def get(self):
+        latest_date=date.today()
+        knn_time_consumption=get_etl_latest_time(latest_date, 'Build Recommendation Model')
+        knn_outfit_quantity=get_etl_quantity(latest_date, 'knn_outfits')
+        knn_rating_quantity=get_etl_quantity(latest_date, 'knn_ratings')
+        if not knn_time_consumption['women'] or not knn_outfit_quantity['women'] or not knn_rating_quantity['women'] :
+            return make_response(render_template('dashboard.html', latest_date=latest_date,  show_data='no'),200)
+        graph1JSON=create_graph(knn_time_consumption,'time_seconds', 'Time Consumption') 
+        graph2JSON=create_graph(knn_outfit_quantity,'outfit_quantity', 'Outfit Quantity') 
+        graph3JSON=create_graph(knn_rating_quantity,'rating_quantity', 'Rating Quantity') 
+        return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON,show_data='yes'),200)
+    
+    def post(self):
+        latest_date=request.form['date']
+        knn_time_consumption=get_etl_latest_time(latest_date, 'Build Recommendation Model')
+        knn_outfit_quantity=get_etl_quantity(latest_date, 'knn_outfits')
+        knn_rating_quantity=get_etl_quantity(latest_date, 'knn_ratings')
+        if not knn_time_consumption['women'] or not knn_outfit_quantity['women'] or not knn_rating_quantity['women'] :
+            return make_response(render_template('dashboard.html', latest_date=latest_date,  show_data='no'),200)
+        else:    
+            graph1JSON=create_graph(knn_time_consumption,'time_seconds', 'Time Consumption') 
+            graph2JSON=create_graph(knn_outfit_quantity,'outfit_quantity', 'Outfit Quantity') 
+            graph3JSON=create_graph(knn_rating_quantity,'rating_quantity', 'Rating Quantity') 
+            return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON,show_data='yes'),200)
+        
+class CrawlerDashboard(Resource):
+    def get(self):
+        return make_response(render_template('crawler.html', show_data='yes'),200)
 
 @app.errorhandler(404)
 def page_not_found(e):

@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="wordcloud-container">
+    <form method="POST">
+        <h1 class="text-center">每日爬蟲數據監控</h1>
+        <div class="container d-flex justify-content-center pt-3" style="width: 400px">
+          <input type="date" id="picker", class="form-control" name="date" placeholder="Choose a date" value={{latest_date}}>
+        </div>
+        <div class="container d-flex justify-content-center pt-0 pb-3" style="width: 400px">
+          <input type="submit" class="btn btn-secondary mt-2">
+        </div>
+    </form>
+      <h1 class="mt-5">Time Consumeption</h1>
+      <h1 class="mt-5">Quantity of New Data</h1>
+</div>
+{% endblock content %}

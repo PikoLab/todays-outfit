@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block content %}
+<div id="wordcloud-container">
+    <form method="POST">
+        <h1 class="text-center">每日推薦數據監控</h1>
+        <div class="container d-flex justify-content-center pt-3" style="width: 400px">
+          <input type="date" id="picker", class="form-control" name="date" placeholder="Choose a date" value={{latest_date}}>
+        </div>
+        <div class="container d-flex justify-content-center pt-0 pb-3" style="width: 400px">
+          <input type="submit" class="btn btn-secondary mt-2">
+        </div>
+    </form>
+    {% if show_data == 'no' %}
+    <h1 class="mt-5">Sorry No Data Found! </h1>
+    {% else %}
+      <h1 class="mt-5">Build Recommendation Model</h1>
+      <div id="container" class="dashboard-container">
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart1"></div>
+                </div>
+            </div>
+          </div>
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart2"></div>
+                </div>
+            </div>
+          </div>
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart3"></div>
+                </div>
+            </div>
+          </div>
+      </div>
+      <h1 class="mt-5">Marketing Funnel & Conversion Rate</h1>
+    {% endif%}
+</div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+    var graphs1 = {{ graph1JSON | safe}};
+    Plotly.plot("chart1", graphs1,{});
+
+    var graphs2 = {{ graph2JSON | safe}};
+    Plotly.plot("chart2", graphs2,{});
+
+    var graphs3 = {{ graph3JSON | safe}};
+    Plotly.plot("chart3", graphs3,{});
+</script>
+
+{% endblock content %}

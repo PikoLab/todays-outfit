@@ -63,24 +63,19 @@ def get_populer_recomm(season,gender,uid):
     lst_outfit_recomm=cursor.fetchall()
     return lst_outfit_recomm
 
-
-def get_explore_recomm(uid,gender):
+def get_explore_recomm(uid,gender,season):
     db = db_connection()
-    cursor=db.cursor()  
-    sql_latest_calculate="SELECT max(calculated_at) as latest FROM recommendation_test"
-    cursor.execute(sql_latest_calculate)
-    latest=cursor.fetchone()['latest']  
-
-    sql="SELECT recommendation_test.outfit2, outfit.outfit_id, outfit.outfit_image \
+    cursor = db.cursor()  
+    sql="SELECT outfit.outfit_id, outfit.outfit_image \
         FROM recommendation_test \
         JOIN outfit ON recommendation_test.outfit2=outfit.outfit_id\
         JOIN kol ON outfit.kol_id=kol.kol_id\
         WHERE recommendation_test.outfit1 in (SELECT outfit_id FROM (SELECT outfit_id FROM event WHERE uid=%s and event_type=%s ORDER BY time DESC LIMIT 6) T)\
                 and recommendation_test.outfit2 not in (SELECT outfit_id FROM event WHERE uid=%s)    \
-                and kol.gender=%s and calculated_at= %s\
+                and kol.gender=%s   and outfit.season=%s \
         GROUP BY recommendation_test.outfit2\
         ORDER BY recommendation_test.similar_score LIMIT 6" 
-    cursor.execute(sql,(uid,4,uid,gender,latest))
+    cursor.execute(sql,(uid,4,uid,gender ,season))
     lst_explore_recomm=cursor.fetchall()  
     return lst_explore_recomm
 
@@ -271,3 +266,26 @@ def get_category_ch_name(category):
     cursor.execute(sql,category)
     category_ch=cursor.fetchone()['name_ch']
     return category_ch
+
+def get_etl_latest_time(date, etl_job):
+    db = db_connection()
+    cursor=db.cursor() 
+    sql="SELECT SUM(CASE WHEN gender='women' THEN time_consumption END) AS women, \
+         SUM(CASE WHEN gender='men' THEN time_consumption END) AS men \
+         FROM etl_time_consumption \
+         WHERE etl_job=%s and DATE(calculated_at)=%s"
+    cursor.execute(sql,(etl_job, date))
+    time_consumption=cursor.fetchone()
+    return time_consumption
+
+def get_etl_quantity(date, item):
+    db = db_connection()
+    cursor=db.cursor() 
+    sql="SELECT SUM(CASE WHEN gender='women' THEN new_quantity END) AS women, \
+         SUM(CASE WHEN gender='men' THEN new_quantity END) AS men \
+         FROM etl_quantity \
+         WHERE item=%s and DATE(calculated_at)=%s"
+    cursor.execute(sql,(item, date))
+    quantity=cursor.fetchone()
+    return quantity
+
