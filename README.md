@@ -25,7 +25,7 @@ Password: demowomen
 ![](https://github.com/PikoLab/todays-outfit/blob/main/03_Charts/07_server_structure_and_data_pipeline.png)
 
 ## Airflow Dag
-![](https://github.com/PikoLab/todays-outfit/blob/develop-dashboard/03_Charts/05_airflow_dag.pngs)
+![](https://github.com/PikoLab/todays-outfit/blob/develop-dashboard/03_Charts/05_airflow_dag.png)
 
 
 ## Technologies
