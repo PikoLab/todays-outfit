@@ -24,7 +24,11 @@
                   <div class="box">
                     <img class="explore_img" src="{{outfit.outfit_image}}">
                     <p class="explore" >  # {{outfit.outfit_id}}  </p>
-                    <button id='btn-non' type='button' class="wish_item_non" style="color:#B6AD90;" value={{outfit.outfit_id}}>❤</button>     
+                    {% if session['access_token'] %}
+                      <button id='btn-non' type='button' class="wish_item_non" style="color:#B6AD90;" value={{outfit.outfit_id}}>❤</button>     
+                    {% else %}
+                      <button id='' type='button' class="wish_item_non" style="color:#B6AD90;" value={{outfit.outfit_id}}>❤</button>     
+                    {% endif%}
                   </div>
               {% endfor %}
             </div>
