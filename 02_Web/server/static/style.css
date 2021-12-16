@@ -16,6 +16,18 @@ body {
     padding: 30px 0px 0px 20px;
 }
 
+.dashboard-container{
+  display:flex;
+  justify-content: center; 
+  display: grid;
+  grid-template-columns: repeat(3, 500px);
+  padding: 10px 0px 0px 20px;
+}
+
+.dashboard-graph{
+  box-shadow: 0px 15px 35px -5px rgba(50, 88, 130, 0.32);
+}
+
 .datapipeline{
   width: 85%;
   height: 85%;
