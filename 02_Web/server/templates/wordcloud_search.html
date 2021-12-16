@@ -22,11 +22,15 @@
               <img class="explore_img" src="{{outfit.outfit_image}}">
               <p class="explore" >  # {{outfit.outfit_id}}  </p>
               <a class="btn btn-secondary shopping"  href="{{ url_for('shopping',outfitid=outfit.outfit_id)}}">Go Shopping </a>
-              {% if outfit.style =="color:#E76F51;" %}
-                <button id='btn-add' type='button' class="wish_item_add" style="color:#E76F51;" value={{outfit.outfit_id}} >❤</button>         
-              {% elif outfit.style =="color:#B6AD90;" %}
-                <button id='btn-non' type='button' class="wish_item_non" style="color:#B6AD90;" value={{outfit.outfit_id}}>❤</button>          
-            {% endif %}
+              {% if session['access_token'] %}
+                {% if outfit.style =="color:#E76F51;" %}
+                  <button id='btn-add' type='button' class="wish_item_add" style="color:#E76F51;" value={{outfit.outfit_id}} >❤</button>         
+                {% elif outfit.style =="color:#B6AD90;" %}
+                  <button id='btn-non' type='button' class="wish_item_non" style="color:#B6AD90;" value={{outfit.outfit_id}}>❤</button>          
+                {% endif %}
+              {% else %}
+                <button id='' type='button' class="wish_item_non" style="color:#B6AD90;" value={{outfit.outfit_id}}>❤</button>    
+              {% endif%}
             </div>
         {% endfor %}
       </div>
