@@ -11,6 +11,7 @@ from flask_restful import Resource
 import json
 from utils import get_season
 import time
+import math
 
 # plotly
 import pandas as pd
@@ -251,7 +252,7 @@ class Wishlist(Resource):
         if check_token['result'] == 'success':
             uid = check_token['current_user']['uid']
             outfit_id = json.loads(list(request.form)[0])['outfit_id']
-            tracking_behavior_addwish(uid, outfit_id)
+            tracking_behavior_addevent(uid, outfit_id, 'wish')
 
     def delete(self):
         check_token = check_valid_token()
@@ -299,6 +300,7 @@ class WordcloudSearch(Resource):
                 else:
                     outfit_info = dict(outfit, index=str(idx + 1), style="color:#B6AD90;")
                     outfits.append(outfit_info)
+            tracking_behavior_viewed(lst_wordcloud_search_outfits, uid)
             return make_response(render_template('wordcloud_search.html', keywordch=keywordch, outfits=outfits), 200)
         return redirect(url_for('wordcloud'))
 
@@ -308,6 +310,11 @@ class Shopping(Resource):
         outfit_id = request.args.get('outfitid')
         shop_outfit = get_outfit_info(outfit_id)
         shop_products = get_product_info(outfit_id)
+
+        check_token = check_valid_token()
+        if check_token['result'] == 'success':
+            uid = check_token['current_user']['uid']
+            tracking_behavior_addevent(uid, outfit_id, 'shop')
 
         type = request.args.get('type')
         if type == 'wish':
@@ -335,7 +342,15 @@ class RecommendationDashboard(Resource):
         graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(Seconds)')
         graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
         graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
-        return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, show_data='yes'), 200)
+
+        marketing_funnel=get_marketing_funnel(latest_date)
+        stages=['view','wish','shop']
+        number=[marketing_funnel['view'],marketing_funnel['wish'], marketing_funnel['shop']]
+        event_data=dict(number=number, stages=stages)
+        fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
+        graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+        conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view'] + marketing_funnel['wish'] + marketing_funnel['shop']) * 100)
+        return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, show_data='yes', conversion_rate=conversion_rate), 200)
 
     def post(self):
         latest_date = request.form['date']
@@ -348,7 +363,15 @@ class RecommendationDashboard(Resource):
             graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(Seconds)')
             graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
             graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
-            return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, show_data='yes'), 200)
+
+            marketing_funnel=get_marketing_funnel(latest_date)
+            stages=['view','wish','shop']
+            number=[marketing_funnel['view'],marketing_funnel['wish'], marketing_funnel['shop']]
+            event_data=dict(number=number, stages=stages)
+            fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
+            graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+            conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view'] + marketing_funnel['wish'] + marketing_funnel['shop']) * 100)
+            return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, show_data='yes', conversion_rate=conversion_rate), 200)
 
 
 class CrawlerDashboard(Resource):

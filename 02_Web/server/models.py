@@ -137,15 +137,21 @@ def get_wordcloud_search_outfit(keyword, season, gender):
     return lst_wordcloud_search_outfits
 
 
-def tracking_behavior_addwish(uid, outfit_id):
+def tracking_behavior_addevent(uid, outfit_id, event_type):
     db = db_connection()
-    addwish_at = datetime.datetime.now()
+    event_at = datetime.datetime.now()
     cursor = db.cursor()
-    sql = "INSERT INTO event (uid, outfit_id, event_type,time) \
+    
+    if event_type == 'wish':
+        rating = 4
+    elif event_type == 'shop':
+        rating = 5
+
+    sql = "INSERT INTO event (uid, outfit_id, event_type, time) \
             VALUES (%s, %s, %s, %s)"
-    cursor.execute(sql, (uid, outfit_id, 4, addwish_at))
+    cursor.execute(sql, (uid, outfit_id, rating, event_at))
     db.commit()
-    print("Add {} to {}'s wishlist  sucessfully!".format(outfit_id, uid))
+    print("Add {} to {}'s event list({})  sucessfully!".format(outfit_id, uid, event_type))
 
 
 def tracking_behavior_removewish(outfit_id, uid):
@@ -309,3 +315,12 @@ def get_etl_quantity(date, item):
     cursor.execute(sql, (item, date))
     quantity = cursor.fetchone()
     return quantity
+
+
+def get_marketing_funnel(date):
+    db = db_connection()
+    cursor = db.cursor()
+    sql = "SELECT * FROM marketing_funnel WHERE date=%s"
+    cursor.execute(sql, date)
+    marketing_funnel = cursor.fetchone()
+    return marketing_funnel
