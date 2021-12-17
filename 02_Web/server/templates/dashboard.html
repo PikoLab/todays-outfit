@@ -37,7 +37,17 @@
             </div>
           </div>
       </div>
+
       <h1 class="mt-5">Marketing Funnel & Conversion Rate</h1>
+      <h4>Conversion Rate: {{conversion_rate}} %</h4>
+      <div class="row p-4">
+        <div class="card m-auto dashboard-graph" style="width: 75%;" data-aos="fade-left">
+            <div class="card-body">            
+                <div id="chart4"></div>
+            </div>
+        </div>
+      </div>
+
       <div class="loader-wrapper">
         <span class="loader"><span class="loader-inner"></span></span>
       </div>
@@ -58,6 +68,9 @@
 
     var graphs3 = {{ graph3JSON | safe}};
     Plotly.plot("chart3", graphs3,{});
+
+    var graphs4 = {{ graph4JSON | safe}};
+    Plotly.plot("chart4", graphs4,{});
 </script>
 
 {% endblock content %}
