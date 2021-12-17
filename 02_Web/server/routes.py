@@ -343,10 +343,10 @@ class RecommendationDashboard(Resource):
         graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
         graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
 
-        marketing_funnel=get_marketing_funnel(latest_date)
-        stages=['view','wish','shop']
-        number=[marketing_funnel['view'],marketing_funnel['wish'], marketing_funnel['shop']]
-        event_data=dict(number=number, stages=stages)
+        marketing_funnel = get_marketing_funnel(latest_date)
+        stages = ['view', 'wish', 'shop']
+        number = [marketing_funnel['view'], marketing_funnel['wish'], marketing_funnel['shop']]
+        event_data = dict(number=number, stages=stages)
         fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
         graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
         conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view'] + marketing_funnel['wish'] + marketing_funnel['shop']) * 100)
@@ -364,10 +364,10 @@ class RecommendationDashboard(Resource):
             graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
             graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
 
-            marketing_funnel=get_marketing_funnel(latest_date)
-            stages=['view','wish','shop']
-            number=[marketing_funnel['view'],marketing_funnel['wish'], marketing_funnel['shop']]
-            event_data=dict(number=number, stages=stages)
+            marketing_funnel = get_marketing_funnel(latest_date)
+            stages = ['view', 'wish', 'shop']
+            number = [marketing_funnel['view'], marketing_funnel['wish'], marketing_funnel['shop']]
+            event_data = dict(number=number, stages=stages)
             fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
             graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
             conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view'] + marketing_funnel['wish'] + marketing_funnel['shop']) * 100)
