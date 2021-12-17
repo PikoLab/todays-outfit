@@ -32,7 +32,7 @@ Password: demowomen
 1. Data Pipeline: `Airflow`
 2. Database: `MongoDB`, `MySQL`
 3. Cloud Service(AWS): `EC2`, `RDS`, `S3`
-4. Recommendation Model:`KNN`( `Collaborative Filtering Approach`, `cosine similarity` for distance metric)
+4. Recommendation Model:`Collaborative Filtering Approach`(`cosine similarity` for distance metric)
 5. NLP: Word Cloud, `Mecab`(Japanese Word Segmentation), `asari`(Japanese Sentiment Analysis)
 6. Designed API for Event Tracking (viewed, collected)
 7. Backend: `Flask`
