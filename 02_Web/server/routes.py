@@ -332,8 +332,8 @@ class RecommendationDashboard(Resource):
         knn_rating_quantity = get_etl_quantity(latest_date, 'knn_ratings')
         if not knn_time_consumption['women'] or not knn_outfit_quantity['women'] or not knn_rating_quantity['women']:
             return make_response(render_template('dashboard.html', latest_date=latest_date,  show_data='no'), 200)
-        graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(seconds)')
-        graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity(pcs)')
+        graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(Seconds)')
+        graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
         graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
         return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, show_data='yes'), 200)
 
@@ -345,15 +345,50 @@ class RecommendationDashboard(Resource):
         if not knn_time_consumption['women'] or not knn_outfit_quantity['women'] or not knn_rating_quantity['women']:
             return make_response(render_template('dashboard.html', latest_date=latest_date,  show_data='no'), 200)
         else:
-            graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(seconds)')
-            graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity(pcs)')
+            graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(Seconds)')
+            graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
             graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
             return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, show_data='yes'), 200)
 
 
 class CrawlerDashboard(Resource):
     def get(self):
-        return make_response(render_template('crawler.html', show_data='yes'), 200)
+        latest_date = date.today()
+        kol_time_consumption = get_etl_latest_time(latest_date, 'crawl_kol')
+        outfit_time_consumption = get_etl_latest_time(latest_date, 'crawl_outfit')
+        new_kol_quantity = get_etl_quantity(latest_date, 'new_kol')
+        new_outfit_quantity = get_etl_quantity(latest_date, 'new_outfit')    
+        new_like_quantity = get_etl_quantity(latest_date, 'new_like')    
+        new_comment_quantity = get_etl_quantity(latest_date, 'new_comment')   
+        if not kol_time_consumption['women'] or not outfit_time_consumption['women'] or not new_kol_quantity['women'] or not new_outfit_quantity['women'] or not new_like_quantity['women'] or not new_comment_quantity['women']:
+            return make_response(render_template('crawler.html', latest_date=latest_date,  show_data='no'), 200)
+        
+        graph1JSON = create_graph(kol_time_consumption, 'Crawl New KOLs (Seconds)')
+        graph2JSON = create_graph(outfit_time_consumption, 'Crawl New Outfits (Hours)')
+        graph3JSON = create_graph(new_kol_quantity, 'New KOL Quantity')
+        graph4JSON = create_graph(new_outfit_quantity, 'New Outfit Quantity')
+        graph5JSON = create_graph(new_like_quantity, 'New Rating Quantity(Like)')
+        graph6JSON = create_graph(new_comment_quantity, 'New Rating Quantity(comment)')
+        return make_response(render_template('crawler.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, graph5JSON=graph5JSON, graph6JSON=graph6JSON, show_data='yes'), 200)
+
+    def post(self):
+        latest_date = request.form['date']
+        kol_time_consumption = get_etl_latest_time(latest_date, 'crawl_kol')
+        outfit_time_consumption = get_etl_latest_time(latest_date, 'crawl_outfit')
+        new_kol_quantity = get_etl_quantity(latest_date, 'new_kol')
+        new_outfit_quantity = get_etl_quantity(latest_date, 'new_outfit') 
+        new_like_quantity = get_etl_quantity(latest_date, 'new_like')    
+        new_comment_quantity = get_etl_quantity(latest_date, 'new_comment')   
+        if not kol_time_consumption['women'] or not outfit_time_consumption['women'] or not new_kol_quantity['women'] or not new_outfit_quantity['women'] or not new_like_quantity['women'] or not new_comment_quantity['women']:
+            return make_response(render_template('crawler.html', latest_date=latest_date,  show_data='no'), 200)
+        
+        graph1JSON = create_graph(kol_time_consumption, 'Crawl New KOLs (Seconds)')
+        graph2JSON = create_graph(outfit_time_consumption, 'Crawl New Outfits (Hours)')
+        graph3JSON = create_graph(new_kol_quantity, 'New KOL Quantity')
+        graph4JSON = create_graph(new_outfit_quantity, 'New Outfit Quantity')
+        graph5JSON = create_graph(new_like_quantity, 'New Rating Quantity(Like)')
+        graph6JSON = create_graph(new_comment_quantity, 'New Rating Quantity(Comment)')
+        return make_response(render_template('crawler.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, graph5JSON=graph5JSON, graph6JSON=graph6JSON, show_data='yes'), 200)
 
 
 @app.errorhandler(404)

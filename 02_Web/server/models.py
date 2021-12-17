@@ -77,7 +77,7 @@ def get_explore_recomm(uid, gender, season):
             JOIN outfit ON recommendation_test.outfit2=outfit.outfit_id \
             JOIN kol ON outfit.kol_id=kol.kol_id \
             WHERE recommendation_test.outfit1 in (SELECT outfit_id FROM (SELECT outfit_id FROM event WHERE uid=%s and event_type=%s ORDER BY time DESC LIMIT 6) T) \
-                    and recommendation_test.outfit2 not in (SELECT outfit_id FROM event WHERE uid = %s) \
+                    and recommendation_test.outfit2 not in (SELECT outfit_id FROM event WHERE uid=%s) \
                     and kol.gender=%s and outfit.season=%s \
             GROUP BY recommendation_test.outfit2 \
             ORDER BY recommendation_test.similar_score LIMIT 6"
@@ -284,10 +284,16 @@ def get_category_ch_name(category):
 def get_etl_latest_time(date, etl_job):
     db = db_connection()
     cursor = db.cursor()
-    sql = "SELECT SUM(CASE WHEN gender='women' THEN time_consumption END) AS women, \
-            SUM(CASE WHEN gender='men' THEN time_consumption END) AS men \
-            FROM etl_time_consumption \
-            WHERE etl_job=%s and DATE(calculated_at)=%s"
+    if etl_job =='crawl_outfit':
+        sql = "SELECT SUM(CASE WHEN gender='women' THEN time_consumption/3600 END) AS women, \
+                SUM(CASE WHEN gender='men' THEN time_consumption/3600 END) AS men \
+                FROM etl_time_consumption \
+                WHERE etl_job=%s and DATE(calculated_at)=%s"  
+    else: 
+        sql = "SELECT SUM(CASE WHEN gender='women' THEN time_consumption END) AS women, \
+                SUM(CASE WHEN gender='men' THEN time_consumption END) AS men \
+                FROM etl_time_consumption \
+                WHERE etl_job=%s and DATE(calculated_at)=%s"
     cursor.execute(sql, (etl_job, date))
     time_consumption = cursor.fetchone()
     return time_consumption

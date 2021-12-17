@@ -10,7 +10,87 @@
           <input type="submit" class="btn btn-secondary mt-2">
         </div>
     </form>
-      <h1 class="mt-5">Time Consumeption</h1>
+    {% if show_data == 'no' %}
+    <h1 class="mt-5">Sorry No Data Found! </h1>
+    {% else %}
+      <h1 class="mt-5">Time Consumeption of Web Crawling</h1>
+      <div id="container" class="dashboard-crawler">
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart1"></div>
+                </div>
+            </div>
+          </div>
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart2"></div>
+                </div>
+            </div>
+          </div>
+      </div>
+
       <h1 class="mt-5">Quantity of New Data</h1>
+      <div id="container" class="dashboard-crawler">
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart3"></div>
+                </div>
+            </div>
+          </div>
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart4"></div>
+                </div>
+            </div>
+          </div>
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart5"></div>
+                </div>
+            </div>
+          </div>
+          <div class="row p-4">
+            <div class="card m-auto dashboard-graph" style="width: 100%;" data-aos="fade-left">
+                <div class="card-body">            
+                    <div id="chart6"></div>
+                </div>
+            </div>
+          </div>
+      </div>
+
+      <div class="loader-wrapper">
+        <span class="loader"><span class="loader-inner"></span></span>
+      </div>
+    {% endif%}
 </div>
+
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script type="text/javascript">
+    $(window).on("load",function(){
+      $(".loader-wrapper").fadeOut("slow");
+    });
+
+    var graphs1 = {{ graph1JSON | safe}};
+    Plotly.plot("chart1", graphs1,{});
+
+    var graphs2 = {{ graph2JSON | safe}};
+    Plotly.plot("chart2", graphs2,{});
+
+    var graphs3 = {{ graph3JSON | safe}};
+    Plotly.plot("chart3", graphs3,{});
+
+    var graphs4 = {{ graph4JSON | safe}};
+    Plotly.plot("chart4", graphs4,{});
+  
+    var graphs5 = {{ graph5JSON | safe}};
+    Plotly.plot("chart5", graphs5,{});
+
+    var graphs6 = {{ graph6JSON | safe}};
+    Plotly.plot("chart6", graphs6,{});
+</script>
 {% endblock content %}

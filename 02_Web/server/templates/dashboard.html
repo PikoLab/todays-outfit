@@ -38,11 +38,18 @@
           </div>
       </div>
       <h1 class="mt-5">Marketing Funnel & Conversion Rate</h1>
+      <div class="loader-wrapper">
+        <span class="loader"><span class="loader-inner"></span></span>
+      </div>
     {% endif%}
 </div>
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script type="text/javascript">
+    $(window).on("load",function(){
+      $(".loader-wrapper").fadeOut("slow");
+    });
+
     var graphs1 = {{ graph1JSON | safe}};
     Plotly.plot("chart1", graphs1,{});
 
