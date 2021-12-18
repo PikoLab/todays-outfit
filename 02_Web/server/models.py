@@ -183,7 +183,8 @@ def get_product_info(outfit_id):
             product.shop_url as shop_url, product.product_image_feature_url as product_image \
             FROM product \
             JOIN match_item on product.id=match_item.product_id \
-            WHERE match_item.outfit_id={} and product.brand not like '{}' ".format(outfit_id, '%nstagram%')
+            WHERE match_item.outfit_id={} and product.brand not like '{}' \
+            GROUP BY product.product_id".format(outfit_id, '%nstagram%')
     cursor.execute(sql)
     products = cursor.fetchall()
     return products

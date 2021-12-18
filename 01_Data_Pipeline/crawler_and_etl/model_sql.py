@@ -142,6 +142,14 @@ def extract_batch_seasonal_rating_data(tuple_seasonal_outfit, start_point, end_p
     return batch_rating_dataset
 
 
+def extract_sql_product_shop_url():
+    sql = "SELECT id, shop_url FROM product WHERE source='wear'"
+    cursor = mysqldb.cursor()
+    cursor.execute(sql)
+    shop_urls = cursor.fetchall()
+    return shop_urls
+    
+
 def insert_sql_new_kol(gender, lst_new_kol):
     cursor = mysqldb.cursor()
     count_new_kol = len(lst_new_kol)
@@ -346,3 +354,11 @@ def insert_sql_etl_quantity(calculated_at, item, gender, new_quantity):
     cursor.execute(sql, (calculated_at, item, gender, new_quantity))
     mysqldb.commit()
     print(calculated_at, item, gender, new_quantity)
+
+
+def update_sql_valid_shop_url(id, valid_shop_url):
+    sql = "UPDATE product SET shop_url=%s WHERE id=%s"
+    cursor = mysqldb.cursor()
+    cursor.execute(sql, (valid_shop_url, id))
+    mysqldb.commit()
+    # print("Update valid shop url for {}/{}".format(id, valid_shop_url))
