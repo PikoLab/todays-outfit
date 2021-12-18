@@ -34,7 +34,8 @@ def check_new_product_by_kol(lst_exist_pid, collection_new_outfit_by_kol):
                 product_title = item['subtitle']
                 color_id = get_wear_color(item['color'])
                 price = int(int(item['price'].replace('JP¥', '').replace('$', '').replace(',', ''))/4//100*100) if 'JP¥' in item['price'] else 0
-                shop_url = item['shop_url'] if item['shop_url'] != 'None' else item['search_url']
+                # shop_url = item['shop_url'] if item['shop_url'] != 'None' else item['search_url']
+                shop_url = item['shop_url']
                 product_image_feature_url = 'https:'+item['item_image_url']
                 if item[' lst_item_match']:
                     product_image_match_url = ['https:'+detail['match_image_url'] for detail in item[' lst_item_match']][0]
