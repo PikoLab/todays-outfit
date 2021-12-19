@@ -132,7 +132,7 @@ def get_wordcloud_search_outfit(keyword, season, gender):
             and outfit.total_weighted_likes > %s \
             GROUP BY kol.kol_id \
             ORDER BY outfit.total_weighted_likes DESC LIMIT 15"
-    cursor.execute(sql, (keyword, season, gender, 150))
+    cursor.execute(sql, (keyword, season, gender, 130))
     lst_wordcloud_search_outfits = cursor.fetchall()
     return lst_wordcloud_search_outfits
 

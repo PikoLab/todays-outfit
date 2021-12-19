@@ -4,7 +4,7 @@ from server.models import *
 from config import *
 from server.forms import RegistrationForm, LoginForm
 import datetime
-from datetime import date
+from datetime import date, timedelta
 import jwt
 from dateutil.relativedelta import relativedelta
 from flask_restful import Resource
@@ -333,23 +333,24 @@ class Datapipeline(Resource):
 
 class RecommendationDashboard(Resource):
     def get(self):
-        latest_date = date.today()
+        latest_date = date.today()-timedelta(1)
         knn_time_consumption = get_etl_latest_time(latest_date, 'Build Recommendation Model')
         knn_outfit_quantity = get_etl_quantity(latest_date, 'knn_outfits')
         knn_rating_quantity = get_etl_quantity(latest_date, 'knn_ratings')
-        if not knn_time_consumption['women'] or not knn_outfit_quantity['women'] or not knn_rating_quantity['women']:
+        marketing_funnel = get_marketing_funnel(latest_date)
+        if not knn_time_consumption['women'] or not knn_outfit_quantity['women'] or not knn_rating_quantity['women'] or not marketing_funnel:
             return make_response(render_template('dashboard.html', latest_date=latest_date,  show_data='no'), 200)
+        
         graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(Seconds)')
         graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
         graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
-
-        marketing_funnel = get_marketing_funnel(latest_date)
+   
         stages = ['view', 'wish', 'shop']
         number = [marketing_funnel['view'], marketing_funnel['wish'], marketing_funnel['shop']]
         event_data = dict(number=number, stages=stages)
         fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
         graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
-        conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view'] + marketing_funnel['wish'] + marketing_funnel['shop']) * 100)
+        conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view']) * 100)
         return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, show_data='yes', conversion_rate=conversion_rate), 200)
 
     def post(self):
@@ -357,26 +358,26 @@ class RecommendationDashboard(Resource):
         knn_time_consumption = get_etl_latest_time(latest_date, 'Build Recommendation Model')
         knn_outfit_quantity = get_etl_quantity(latest_date, 'knn_outfits')
         knn_rating_quantity = get_etl_quantity(latest_date, 'knn_ratings')
-        if not knn_time_consumption['women'] or not knn_outfit_quantity['women'] or not knn_rating_quantity['women']:
-            return make_response(render_template('dashboard.html', latest_date=latest_date,  show_data='no'), 200)
-        else:
-            graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(Seconds)')
-            graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
-            graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
+        marketing_funnel = get_marketing_funnel(latest_date)
+        if not knn_time_consumption['women'] or not knn_outfit_quantity['women'] or not knn_rating_quantity['women'] or not marketing_funnel:
+            return make_response(render_template('dashboard.html', latest_date=latest_date,  show_data='no'), 200) 
+        
+        graph1JSON = create_graph(knn_time_consumption, 'Time Consumption(Seconds)')
+        graph2JSON = create_graph(knn_outfit_quantity, 'Outfit Quantity')
+        graph3JSON = create_graph(knn_rating_quantity, 'Rating Quantity')
 
-            marketing_funnel = get_marketing_funnel(latest_date)
-            stages = ['view', 'wish', 'shop']
-            number = [marketing_funnel['view'], marketing_funnel['wish'], marketing_funnel['shop']]
-            event_data = dict(number=number, stages=stages)
-            fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
-            graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
-            conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view'] + marketing_funnel['wish'] + marketing_funnel['shop']) * 100)
-            return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, show_data='yes', conversion_rate=conversion_rate), 200)
+        stages = ['view', 'wish', 'shop']
+        number = [marketing_funnel['view'], marketing_funnel['wish'], marketing_funnel['shop']]
+        event_data = dict(number=number, stages=stages)
+        fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
+        graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
+        conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view']) * 100)
+        return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, show_data='yes', conversion_rate=conversion_rate), 200)
 
 
 class CrawlerDashboard(Resource):
     def get(self):
-        latest_date = date.today()
+        latest_date = date.today()-timedelta(1)
         kol_time_consumption = get_etl_latest_time(latest_date, 'crawl_kol')
         outfit_time_consumption = get_etl_latest_time(latest_date, 'crawl_outfit')
         new_kol_quantity = get_etl_quantity(latest_date, 'new_kol')
