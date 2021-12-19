@@ -161,7 +161,7 @@ def insert_sql_new_kol(gender, lst_new_kol):
                 VALUES (%s, %s)"
             cursor.executemany(sql, lst_new_kol)
             mysqldb.commit()
-            print("Dataset (#1:{})commited to SQL/kol!".format(lst_new_kol[0]))
+            print("Dataset (#1:{})commited to SQL/kol!".format(lst_new_kol[:1]))
             print("Wear New Kols commited to SQL for {}/{} kols".format(gender, count_new_kol))
         # in case duplicate primary key error: "insert_one" (insert one by one)
         except:
@@ -186,7 +186,7 @@ def insert_sql_new_outfit(gender, kol_id, lst_new_outfit_by_kol):
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cursor.executemany(sql, lst_new_outfit_by_kol)
             mysqldb.commit()
-            print("Dataset (#1:{})commited to SQL/outfit!".format(lst_new_outfit_by_kol[0]))
+            print("Dataset (#1:{})commited to SQL/outfit!".format(lst_new_outfit_by_kol[:1]))
             print("Wear New Outfits commited to SQL for {}/{}/{}".format(gender, kol_id, len(lst_new_outfit_by_kol)))
 
         # in case duplicate primary key error: "insert_one" (insert one by one)
@@ -197,9 +197,9 @@ def insert_sql_new_outfit(gender, kol_id, lst_new_outfit_by_kol):
                     VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)"
                     cursor.execute(sql, tuple_outfit)
                     mysqldb.commit()
-                    print("Dataset (#1:{})commited to SQL/outfit!".format(tuple_outfit[0]))
+                    print("Dataset (#1:{})commited to SQL/outfit!".format(tuple_outfit[:1]))
                 except:
-                    print("Duplicate Primary Key Error for ({}/{}/{}) commited to SQL/outfit!".format(gender, kol_id, tuple_outfit[0]))
+                    print("Duplicate Primary Key Error for ({}/{}/{}) commited to SQL/outfit!".format(gender, kol_id, tuple_outfit[:1]))
 
 
 def insert_sql_new_product(gender, kol_id, lst_new_product_by_kol):
@@ -212,7 +212,7 @@ def insert_sql_new_product(gender, kol_id, lst_new_product_by_kol):
                 VALUES (%s,%s, %s, %s, %s, %s, %s, %s, %s, %s)"
             cursor.executemany(sql, lst_new_product_by_kol)
             mysqldb.commit()
-            print("Dataset (#1:{})commited to SQL/product!".format(lst_new_product_by_kol[0]))
+            print("Dataset (#1:{})commited to SQL/product!".format(lst_new_product_by_kol[:1]))
             print("Wear New Products commited to SQL for {}/{}/{}".format(gender, kol_id, len(lst_new_product_by_kol)))
         # in case duplicate primary key error: "insert_one" (insert one by one)
         except:
@@ -326,7 +326,7 @@ def insert_sql_wordcloud(lst_words):
     cursor = mysqldb.cursor()
     cursor.executemany(sql, lst_words)
     mysqldb.commit()
-    print("Dataset (#1:{}/{})commited to SQL/wordcloud!".format(lst_words[0][0], lst_words[0]))
+    print("Dataset (#1:{}/{})commited to SQL/wordcloud!".format(lst_words[0][0], lst_words[:1]))
 
 
 def insert_sql_knn_recommendation(lst_seasonal_recomm):
@@ -335,7 +335,7 @@ def insert_sql_knn_recommendation(lst_seasonal_recomm):
     cursor = mysqldb.cursor()
     cursor.executemany(sql, lst_seasonal_recomm)
     mysqldb.commit()
-    print("Recommendation Dataset (data1#{})commited to SQL/recomm!".format(lst_seasonal_recomm[0]))
+    print("Recommendation Dataset (data1#{})commited to SQL/recomm!".format(lst_seasonal_recomm[:1]))
 
 
 def insert_sql_etl_time_consumption(calculated_at, job_name, gender, time_consumption):
@@ -362,3 +362,52 @@ def update_sql_valid_shop_url(id, valid_shop_url):
     cursor.execute(sql, (valid_shop_url, id))
     mysqldb.commit()
     # print("Update valid shop url for {}/{}".format(id, valid_shop_url))
+
+
+def insert_marketing_funnel(latest_date):
+    sql = "INSERT INTO marketing_funnel(date, view, wish, shop) \
+            SELECT DATE(time) as date, SUM(CASE WHEN event_type=-1 THEN 1 ELSE 0 END) AS view, \
+            SUM(CASE WHEN event_type=4 THEN 1 ELSE 0 END) AS wish, \
+            SUM(CASE WHEN event_type=5 THEN 1 ELSE 0 END) AS shop \
+            FROM event \
+            where DATE(time) = %s \
+            GROUP BY DATE(time)" 
+    cursor = mysqldb.cursor()
+    cursor.execute(sql, latest_date)
+    mysqldb.commit()
+    print("Update Marketing Funnel successfully for {}".format(latest_date))
+
+
+
+def extract_trendy_wordcloud(gender):
+    cursor = mysqldb.cursor()
+    sql = "SELECT word_jp FROM wordcloud \
+            WHERE gender=%s \
+            ORDER BY calculated_at DESC, frequency DESC LIMIT 10"
+    cursor.execute(sql, gender)
+    words = cursor.fetchall()
+    return words
+
+
+def extract_wordcloud_search_outfit(keyword, season, gender):
+    cursor = mysqldb.cursor()
+    sql = "SELECT outfit.outfit_id as outfit_id \
+            JOIN kol on outfit.kol_id=kol.kol_id \
+            WHERE outfit.outfit_description RLIKE %s and outfit.season=%s and kol.gender=%s \
+            and outfit.total_weighted_likes > %s \
+            GROUP BY kol.kol_id \
+            ORDER BY outfit.total_weighted_likes DESC LIMIT 15"
+    cursor.execute(sql, (keyword, season, gender, 130))
+    lst_wordcloud_search_outfits = cursor.fetchall()
+    return lst_wordcloud_search_outfits
+
+def extract_product_shop_url(outfit_id):
+    cursor = mysqldb.cursor()
+    sql = "SELECT product.product_id as product_id, product.shop_url as shop_url\
+            FROM product \
+            JOIN match_item on product.id=match_item.product_id \
+            WHERE match_item.outfit_id={} and product.brand not like '{}' \
+            GROUP BY product.product_id".format(outfit_id, '%nstagram%')
+    cursor.execute(sql)
+    products = cursor.fetchall()
+    return products
