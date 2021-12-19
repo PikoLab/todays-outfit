@@ -12,10 +12,11 @@
             {% endif%}
             <div id="grid-wrapper-shopping">
                 {% for product in products %}
-                    <div class="box_shopping">    
-                            <a href="{{product.shop_url}}"><img class="shop_product_img" src="{{ product.product_image}}"></a>
-                            <a class="btn btn-secondary shopping-detail"  href="{{product.shop_url}}" style="width: 150px;"> Go Shopping</a>
-                     
+                    <div class="box_shopping">
+                            <a href=""><img class="shop_product_img" src="{{ product.product_image}}"></a>
+                            {% if shop_url != 'None'%}   
+                                <a class="btn btn-secondary shopping-detail"  href="{{product.shop_url}}" style="width: 150px;"> Go Shopping</a>
+                            {% endif %}
                                 <p class="product_title_shopping">{{ product.brand }} / {{ product.category.upper() }}</p>
                                 {% if product.price != 'None' and  product.price !=0 %}
                                     <p class="product_title_shopping">約台幣{{product.price}}</p>
