@@ -12,8 +12,8 @@ default_args = {
     'depends_on_past': False,
     'start_date': AIRFLOW_START_DATE,
     'email': [AIRFLOW_EMIAL],
-    'email_on_failure': False,
-    'email_on_retry': False,
+    'email_on_failure': True,
+    'email_on_retry': True,
     'retries': 1,
     'retry_delay': timedelta(minutes=5),
 }
