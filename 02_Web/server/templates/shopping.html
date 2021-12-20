@@ -17,7 +17,7 @@
                             {% if product['shop_url'] != 'None'%}   
                                 <a class="btn btn-secondary shopping-detail"  href="{{product.shop_url}}" style="width: 150px;"> Go Shopping</a>
                             {% else %}
-                                <button class="btn btn-secondary shopping-detail" disabled style="width: 150px;">商品已售罄</button>
+                                <button class="btn btn-secondary shopping-detail" disabled style="width: 150px;">商品已下架</button>
                             {% endif %}
                                 <p class="product_title_shopping">{{ product.brand }} / {{ product.category.upper() }}</p>
                                 {% if product.price != 'None' and  product.price !=0 %}
