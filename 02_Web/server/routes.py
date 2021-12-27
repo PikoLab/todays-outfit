@@ -350,7 +350,7 @@ class RecommendationDashboard(Resource):
         event_data = dict(number=number, stages=stages)
         fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
         graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
-        conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view']) * 100)
+        conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view']) * 100) if marketing_funnel['view']!=0 else 0
         return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, show_data='yes', conversion_rate=conversion_rate), 200)
 
     def post(self):
@@ -371,7 +371,7 @@ class RecommendationDashboard(Resource):
         event_data = dict(number=number, stages=stages)
         fig4 = px.funnel(event_data, x='number', y='stages', title="Marketing Funnel")
         graph4JSON = json.dumps(fig4, cls=plotly.utils.PlotlyJSONEncoder)
-        conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view']) * 100)
+        conversion_rate = math.floor(marketing_funnel['shop'] / (marketing_funnel['view']) * 100) if marketing_funnel['view']!=0 else 0
         return make_response(render_template('dashboard.html', latest_date=latest_date,  graph1JSON=graph1JSON, graph2JSON=graph2JSON, graph3JSON=graph3JSON, graph4JSON=graph4JSON, show_data='yes', conversion_rate=conversion_rate), 200)
 
 
