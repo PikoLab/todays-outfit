@@ -383,8 +383,8 @@ class CrawlerDashboard(Resource):
         new_kol_quantity = get_etl_quantity(latest_date, 'new_kol')
         new_outfit_quantity = get_etl_quantity(latest_date, 'new_outfit')    
         new_like_quantity = get_etl_quantity(latest_date, 'new_like')    
-        new_comment_quantity = get_etl_quantity(latest_date, 'new_comment')   
-        if not kol_time_consumption['women'] or not outfit_time_consumption['women'] or not new_kol_quantity['women'] or not new_outfit_quantity['women'] or not new_like_quantity['women'] or not new_comment_quantity['women']:
+        new_comment_quantity = get_etl_quantity(latest_date, 'new_comment') 
+        if kol_time_consumption['women'] is None or outfit_time_consumption['women'] is None or new_kol_quantity['women'] is None or new_outfit_quantity['women'] is None or new_like_quantity['women'] is None or new_comment_quantity['women'] is None:
             return make_response(render_template('crawler.html', latest_date=latest_date,  show_data='no'), 200)
         
         graph1JSON = create_graph(kol_time_consumption, 'Crawl New KOLs (Seconds)')
