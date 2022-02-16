@@ -42,7 +42,7 @@ if __name__ == "__main__":
         insert_mongodb_new_kol(gender, lst_new_kol)
         insert_sql_etl_quantity(calculated_at, 'new_kol', gender, len(lst_new_kol))
     except:
-        pass
+        insert_sql_etl_quantity(calculated_at, 'new_kol', gender, len(lst_new_kol))
 
     t2 = time.time()
     time_consumption = t2-t1
